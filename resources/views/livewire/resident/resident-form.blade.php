@@ -28,7 +28,7 @@
             <div class="flex items-center gap-4 pb-4 border-b border-slate-50 mb-5">
                 <div class="relative">
                     <img class="h-20 w-20 rounded-full object-cover bg-slate-100 border border-slate-200" 
-                         src="{{ $photoUpload ? $photoUpload->temporaryUrl() : ($resident && $resident->photo ? asset('storage/' . $resident->photo) : 'https://ui-avatars.com/api/?name=R&background=f3f4f6&color=1f2937') }}">
+                         src="{{ $photoUpload ? $photoUpload->temporaryUrl() : ($resident && $resident->photo ? asset('storage/' . $resident->photo) : ($resident ? asset('assets/images/avatars/resident_' . ($resident->gender === 'female' ? 'female' : 'male') . '.png') : asset('assets/images/avatars/generic.png'))) }}">
                     <label for="p_up" class="absolute -bottom-1.5 -right-1.5 p-1.5 bg-indigo-600 text-white rounded-full shadow cursor-pointer">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg>
                     </label>

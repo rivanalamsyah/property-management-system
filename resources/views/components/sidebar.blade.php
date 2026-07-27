@@ -170,7 +170,7 @@
         <div class="p-3 border-t border-slate-100/80 bg-slate-50/40">
             <a href="{{ route('profile') }}" class="flex items-center gap-3 w-full hover:bg-white border border-transparent hover:border-slate-200/60 p-2 rounded-xl transition duration-150">
                 <img class="h-8 w-8 rounded-lg object-cover bg-slate-100 border border-slate-200/50 flex-shrink-0" 
-                     src="{{ auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=6366f1&color=fff' }}" 
+                     src="{{ auth()->user()->avatar_url }}" 
                      alt="{{ auth()->user()->name }}">
                 <div class="overflow-hidden flex-1">
                     <p class="text-xs font-bold text-slate-800 truncate">{{ auth()->user()->name }}</p>

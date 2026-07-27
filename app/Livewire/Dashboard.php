@@ -12,6 +12,7 @@ use App\Models\Contract;
 use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\Resident;
+use App\Models\Room;
 use App\Models\InAppNotification;
 use App\Services\ComplaintService;
 use App\Services\PaymentService;
@@ -25,7 +26,7 @@ class Dashboard extends Component
     use WithFileUploads;
 
     // Resident Tabs
-    public string $activeResidentTab = 'room'; // room, billing, complaints
+    public string $activeResidentTab = 'room';
 
     // Resident check-out
     public bool $showCheckOutModal = false;
@@ -49,15 +50,15 @@ class Dashboard extends Component
     public function triggerTestToast(string $type): void
     {
         $messages = [
-            'success' => 'Success! Database connection verified and workspace synchronized.',
-            'error' => 'Error! Action could not be processed due to validation constraints.',
-            'warning' => 'Warning! System scheduled maintenance starts at 12:00 AM UTC.',
-            'info' => 'Info! New notification system is fully initialized.',
+            'success' => 'Sukses! Koneksi database terverifikasi dan ruang kerja disinkronkan.',
+            'error' => 'Error! Tindakan tidak dapat diproses karena kendala validasi.',
+            'warning' => 'Peringatan! Pemeliharaan sistem terjadwal dimulai pukul 12:00 AM UTC.',
+            'info' => 'Info! Sistem notifikasi baru telah diinisialisasi sepenuhnya.',
         ];
 
         $this->dispatch('toast', [
             'type' => $type,
-            'message' => $messages[$type] ?? 'Notification triggered.',
+            'message' => $messages[$type] ?? 'Notifikasi dipicu.',
         ]);
     }
 
@@ -78,7 +79,7 @@ class Dashboard extends Component
             ]);
 
             $this->showCheckOutModal = false;
-            $this->dispatch('toast', ['type' => 'success', 'message' => 'Check-out request registered. Management will inspect room shortly.']);
+            $this->dispatch('toast', ['type' => 'success', 'message' => 'Permintaan check-out telah terdaftar. Manajemen akan segera memeriksa kamar.']);
         } catch (\Exception $e) {
             $this->dispatch('toast', ['type' => 'error', 'message' => $e->getMessage()]);
         }
@@ -117,7 +118,7 @@ class Dashboard extends Component
 
             $this->showComplaintModal = false;
             $this->reset(['complaintTitle', 'complaintDescription', 'complaintCategory']);
-            $this->dispatch('toast', ['type' => 'success', 'message' => 'Complaint ticket registered successfully.']);
+            $this->dispatch('toast', ['type' => 'success', 'message' => 'Tiket keluhan berhasil didaftarkan.']);
         } catch (\Exception $e) {
             $this->dispatch('toast', ['type' => 'error', 'message' => $e->getMessage()]);
         }
@@ -164,7 +165,7 @@ class Dashboard extends Component
 
             $this->showPaymentModal = false;
             $this->reset(['paymentInvoiceId', 'paymentReferenceNumber', 'paymentProofFile']);
-            $this->dispatch('toast', ['type' => 'success', 'message' => 'Payment transfer receipt uploaded. Staff will verify transaction.']);
+            $this->dispatch('toast', ['type' => 'success', 'message' => 'Bukti transfer pembayaran berhasil diunggah. Staf akan memverifikasi transaksi.']);
         } catch (\Exception $e) {
             $this->dispatch('toast', ['type' => 'error', 'message' => $e->getMessage()]);
         }
@@ -191,7 +192,7 @@ class Dashboard extends Component
             ]);
 
             $this->reset(['newCommentText']);
-            $this->dispatch('toast', ['type' => 'success', 'message' => 'Comment posted to discussion board.']);
+            $this->dispatch('toast', ['type' => 'success', 'message' => 'Komentar berhasil diposting di papan diskusi.']);
         } catch (\Exception $e) {
             $this->dispatch('toast', ['type' => 'error', 'message' => $e->getMessage()]);
         }

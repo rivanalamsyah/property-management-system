@@ -176,9 +176,20 @@
 
                     <!-- Actions -->
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <x-button variant="outline" size="sm" class="px-2.5! py-1! text-xs font-semibold" onclick="window.location.href='{{ route('payments.show', $pay->id) }}'">
-                            {{ $pay->status->value === 'waiting_verification' ? 'Verify Transfer' : 'View Receipt' }}
-                        </x-button>
+                        @if($pay->status->value === 'waiting_verification')
+                            <x-button variant="outline" size="sm" class="inline-flex items-center justify-center p-2 rounded-xl border border-slate-200 hover:bg-indigo-50/50 hover:border-indigo-200 text-indigo-600 transition cursor-pointer" onclick="window.location.href='{{ route('payments.show', $pay->id) }}'" title="Verifikasi Transfer" aria-label="Verifikasi Transfer">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                                </svg>
+                            </x-button>
+                        @else
+                            <x-button variant="outline" size="sm" class="inline-flex items-center justify-center p-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-600 transition cursor-pointer" onclick="window.location.href='{{ route('payments.show', $pay->id) }}'" title="Lihat Penerimaan" aria-label="Lihat Penerimaan">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                </svg>
+                            </x-button>
+                        @endif
                     </td>
                 </tr>
             @empty

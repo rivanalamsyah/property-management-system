@@ -49,7 +49,7 @@
         <div x-data="{ open: false }" class="relative">
             <button @click="open = !open" class="flex items-center gap-2 p-1 hover:bg-slate-100 rounded-xl transition cursor-pointer" aria-label="Buka Menu Profil">
                 <img class="h-8 w-8 rounded-lg object-cover bg-slate-100 border border-slate-200/60" 
-                     src="{{ auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=6366f1&color=fff' }}" 
+                     src="{{ auth()->user()->avatar_url }}" 
                      alt="{{ auth()->user()->name }}">
                 <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
             </button>

@@ -169,8 +169,10 @@
 
                         <!-- Actions -->
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <x-button variant="outline" size="sm" class="px-2.5! py-1! text-xs font-semibold" onclick="window.location.href='{{ route('complaints.show', $cmp->id) }}'">
-                                Manage Case
+                            <x-button variant="outline" size="sm" class="inline-flex items-center justify-center p-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-indigo-600 transition cursor-pointer" onclick="window.location.href='{{ route('complaints.show', $cmp->id) }}'" title="Kelola Kasus" aria-label="Kelola Kasus">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+                                </svg>
                             </x-button>
                         </td>
                     </tr>
@@ -387,7 +389,7 @@
                 <label class="block text-xs font-semibold text-slate-500 mb-1.5">Priority</label>
                 <div class="grid grid-cols-5 gap-2 text-center">
                     @foreach(['low' => 'Low', 'normal' => 'Normal', 'high' => 'High', 'critical' => 'Critical', 'emergency' => 'Emergency'] as $val => $lbl)
-                        <label class="flex flex-col items-center justify-center p-2 border rounded-xl cursor-pointer text-[10px] font-bold {{ $priority === $val ?"bg-indigo-50 border-indigo-500 text-indigo-700' : 'bg-slate-50/50 border-slate-150' }}">
+                        <label class="flex flex-col items-center justify-center p-2 border rounded-xl cursor-pointer text-[10px] font-bold {{ $priority === $val ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'bg-slate-50/50 border-slate-150' }}">
                             <input type="radio" wire:model="priority" value="{{ $val }}" class="sr-only">
                             {{ $lbl }}
                         </label>

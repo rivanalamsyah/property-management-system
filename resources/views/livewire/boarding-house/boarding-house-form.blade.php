@@ -47,7 +47,7 @@
                     <div class="flex items-center gap-4">
                         <div class="relative">
                             <img class="h-16 w-16 rounded-xl object-cover bg-slate-100 border border-slate-200" 
-                                 src="{{ $logoUpload ? $logoUpload->temporaryUrl() : ($boardingHouse && $boardingHouse->logo ? asset('storage/' . $boardingHouse->logo) : 'https://ui-avatars.com/api/?name=L&background=e0e7ff&color=4f46e5') }}">
+                                 src="{{ $logoUpload ? $logoUpload->temporaryUrl() : ($boardingHouse && $boardingHouse->logo ? asset('storage/' . $boardingHouse->logo) : asset('assets/images/logos/default_logo.png')) }}">
                             <label for="logo_up" class="absolute -bottom-1.5 -right-1.5 p-1 bg-indigo-600 text-white rounded-lg shadow cursor-pointer">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg>
                             </label>
@@ -64,7 +64,7 @@
                     <div class="flex items-center gap-4">
                         <div class="relative w-28 h-16 bg-slate-100 border border-slate-200 rounded-xl overflow-hidden">
                             <img class="w-full h-full object-cover" 
-                                 src="{{ $coverUpload ? $coverUpload->temporaryUrl() : ($boardingHouse && $boardingHouse->cover_image ? asset('storage/' . $boardingHouse->cover_image) : 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=300&q=80') }}">
+                                 src="{{ $coverUpload ? $coverUpload->temporaryUrl() : ($boardingHouse && $boardingHouse->cover_image ? asset('storage/' . $boardingHouse->cover_image) : asset('assets/images/property/default_cover.png')) }}">
                             <label for="cover_up" class="absolute bottom-1 right-1 p-1 bg-indigo-600 text-white rounded-lg shadow cursor-pointer">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg>
                             </label>
@@ -384,11 +384,15 @@
                         <!-- Actions -->
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <div class="flex items-center gap-2">
-                                <x-button variant="outline" size="sm" class="px-2! py-1! text-xs" wire:click="editRule({{ $ruleItem->id }})">
-                                    Edit
+                                <x-button variant="outline" size="sm" class="inline-flex items-center justify-center p-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-600 transition cursor-pointer" wire:click="editRule({{ $ruleItem->id }})" title="Ubah Aturan" aria-label="Ubah Aturan">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                                    </svg>
                                 </x-button>
-                                <x-button variant="outline" size="sm" class="px-2! py-1! text-xs text-rose-600 border-slate-200 hover:border-rose-100 hover:bg-rose-50" wire:click="deleteRule({{ $ruleItem->id }})">
-                                    Remove
+                                <x-button variant="outline" size="sm" class="inline-flex items-center justify-center p-2 rounded-xl text-rose-600 border border-slate-200 hover:border-rose-100 hover:bg-rose-50 cursor-pointer" wire:click="deleteRule({{ $ruleItem->id }})" title="Hapus Aturan" aria-label="Hapus Aturan">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
                                 </x-button>
                             </div>
                         </td>

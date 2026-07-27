@@ -80,7 +80,7 @@
                 <!-- Cover Image & Badges -->
                 <div class="h-44 relative bg-slate-100 overflow-hidden">
                     <img class="w-full h-full object-cover group-hover:scale-105 transition duration-500" 
-                         src="{{ $house->cover_image ? asset('storage/' . $house->cover_image) : 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=600&q=80' }}" 
+                         src="{{ $house->cover_image ? asset('storage/' . $house->cover_image) : asset('assets/images/property/default_cover.png') }}" 
                          alt="{{ $house->name }}">
                     
                     <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none"></div>

@@ -16,67 +16,86 @@
     </script>
     @endpush
 
-    <!-- Section 1: Hero Banner (UCD: Low Friction Demo Request) -->
-    <section class="pt-20 pb-12 text-center space-y-4 bg-gradient-to-b from-indigo-50/30 via-white to-white">
-        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white border border-indigo-100 text-indigo-600 shadow-2xs">
-            <span class="w-1.5 h-1.5 rounded-full bg-indigo-600 animate-pulse"></span>
-            Hubungi Tim Sales &amp; Konsultasi
-        </span>
-        <h1 class="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight">Konsultasikan Kebutuhan Bisnis Kos Anda</h1>
-        <p class="text-slate-600 text-sm max-w-lg mx-auto leading-relaxed">
-            Jadwalkan demo khusus, dapatkan dukungan integrasi, atau diskusikan opsi paket kustom bersama spesialis pertumbuhan properti kami.
-        </p>
+    <!-- Contact Custom Styles -->
+    <style>
+        .contact-mesh {
+            background-image: radial-gradient(circle at 90% 10%, rgba(99, 102, 241, 0.04), transparent 50%);
+        }
+    </style>
+
+    <!-- Section 1: Hero Banner -->
+    <section class="relative overflow-hidden pt-28 pb-12 text-center space-y-4 bg-slate-50/30 contact-mesh">
+        <div class="absolute top-0 left-1/4 w-80 h-80 bg-indigo-400/5 rounded-full blur-3xl pointer-events-none -z-10"></div>
+        
+        <div class="max-w-4xl mx-auto px-6 space-y-4">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-white border border-slate-200/60 text-slate-800 shadow-2xs">
+                <span class="w-1.5 h-1.5 rounded-full bg-indigo-600 animate-pulse"></span>
+                Hubungi Tim Sales &amp; Konsultasi
+            </span>
+            <h1 class="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight leading-tight">
+                Konsultasikan Kebutuhan <span class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600">Bisnis Kos Anda</span>
+            </h1>
+            <p class="text-slate-500 text-sm max-w-lg mx-auto leading-relaxed font-medium">
+                Jadwalkan demo khusus, dapatkan dukungan migrasi data, atau diskusikan opsi paket kustom bersama spesialis pertumbuhan properti kami.
+            </p>
+        </div>
     </section>
 
     <!-- Main Content Area -->
     <section class="py-12 bg-white">
-        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12">
-            <!-- Left: Livewire Form Section -->
-            <div class="space-y-6">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+            <!-- Left: Livewire Form Section inside glass box -->
+            <div class="lg:col-span-6 bg-slate-50/50 border border-slate-200/80 rounded-3xl p-6 shadow-inner">
                 <livewire:marketing.contact-form />
             </div>
 
             <!-- Right: Details, Channels, Hours, Maps -->
-            <div class="space-y-8">
+            <div class="lg:col-span-6 space-y-8 text-left">
                 <!-- Communication Channels Grid -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <x-card :hover="true" class="space-y-2 text-xs">
+                    <div class="bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs hover:shadow-md transition duration-200 space-y-2 text-xs group">
                         <span class="font-bold text-slate-900">Saluran WhatsApp Resmi</span>
-                        <p class="text-slate-500">Bantuan langsung via chat untuk diskusi seputar operasional kos.</p>
-                        <a href="https://wa.me/6281234567890" target="_blank" rel="noopener noreferrer" class="text-indigo-600 font-bold hover:underline inline-block pt-1">
+                        <p class="text-slate-500 leading-relaxed font-medium">Bantuan langsung via chat untuk diskusi seputar operasional kos.</p>
+                        <a href="https://wa.me/6281234567890?text=Halo%20tim%20Kosan%2C%20saya%20tertarik%20untuk%20menjadwalkan%20demo%20dasbor%20dan%20tanya%20tentang%20paket%20kustom%20untuk%20bisnis%20kos%20saya." target="_blank" rel="noopener noreferrer" class="text-indigo-600 font-extrabold hover:underline inline-block pt-2">
                             Chat via WhatsApp +62 812 3456 7890 &rarr;
                         </a>
-                    </x-card>
+                    </div>
 
-                    <x-card :hover="true" class="space-y-2 text-xs">
+                    <div class="bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs hover:shadow-md transition duration-200 space-y-2 text-xs group">
                         <span class="font-bold text-slate-900">Pertanyaan Umum &amp; Kerjasama</span>
-                        <p class="text-slate-500">Hubungan korporat, kepatuhan legal, dan integrasi API kustom.</p>
-                        <a href="mailto:business@kosan.test" class="text-indigo-600 font-bold hover:underline inline-block pt-1">
+                        <p class="text-slate-500 leading-relaxed font-medium">Hubungan korporat, kepatuhan legal, dan integrasi API kustom.</p>
+                        <a href="mailto:business@kosan.test" class="text-indigo-600 font-extrabold hover:underline inline-block pt-2">
                             business@kosan.test &rarr;
                         </a>
-                    </x-card>
+                    </div>
                 </div>
 
-                <!-- Office Location & Map Preview -->
-                <x-card class="min-h-[180px] flex flex-col justify-between text-xs space-y-4">
-                    <span class="font-extrabold text-slate-900 uppercase tracking-wider">Lokasi Kantor Utama</span>
-                    <div class="flex-1 bg-slate-50 border border-slate-200/80 rounded-2xl p-6 flex items-center justify-center text-slate-500 font-mono text-xs shadow-inner">
-                        📍 Jl. Dago Giri No. 45, Bandung, Jawa Barat 40142
+                <!-- Office Location & Map Preview (Visual Card) -->
+                <div class="bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs space-y-3">
+                    <span class="text-[10px] font-extrabold text-slate-900 uppercase tracking-widest bg-slate-50 px-2.5 py-1 rounded-md border border-slate-100">Lokasi Kantor Utama</span>
+                    <div class="bg-slate-50 border border-slate-150 rounded-2xl p-5 flex items-center gap-3 text-slate-655 shadow-inner">
+                        <div class="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center flex-shrink-0 text-indigo-600">
+                            📍
+                        </div>
+                        <div class="text-xs font-semibold">
+                            <h5 class="text-slate-800 font-bold">Bandung HQ</h5>
+                            <p class="text-slate-500 mt-0.5">Jl. Dago Giri No. 45, Bandung, Jawa Barat 40142</p>
+                        </div>
                     </div>
-                </x-card>
+                </div>
 
                 <!-- Customer Support & Office Hours -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-xs">
-                    <div class="space-y-1.5">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-xs font-semibold text-slate-655">
+                    <div class="space-y-2">
                         <h4 class="font-bold text-slate-900">Layanan Pelanggan</h4>
-                        <p class="text-slate-500 leading-relaxed">
-                            Sudah menjadi pengguna platform Kosan? Akses pusat dokumentasi atau buat tiket bantuan teknis secara langsung dari menu pengaturan ruang kerja Anda.
+                        <p class="text-slate-500 leading-relaxed font-medium">
+                            Sudah menjadi pengguna platform Kosan? Akses pusat dokumentasi atau buat tiket bantuan teknis secara langsung dari menu pengaturan dasbor Anda.
                         </p>
                     </div>
 
-                    <div class="space-y-1.5">
+                    <div class="space-y-2">
                         <h4 class="font-bold text-slate-900">Jam Operasional</h4>
-                        <p class="text-slate-500 leading-relaxed">
+                        <p class="text-slate-500 leading-relaxed font-medium">
                             Senin - Jumat<br>
                             09.00 - 17.00 WIB (GMT+7)<br>
                             Tutup pada hari libur nasional
@@ -88,20 +107,20 @@
     </section>
 
     <!-- Section 8: Buyer FAQs -->
-    <section class="py-16 bg-slate-50/50 border-t border-slate-100">
-        <div class="max-w-4xl mx-auto px-6 space-y-8">
-            <h3 class="text-xl font-extrabold text-slate-900 text-center tracking-tight">Pertanyaan yang Sering Diajukan</h3>
+    <section class="py-16 bg-slate-50/50 border-t border-slate-150">
+        <div class="max-w-4xl mx-auto px-6 space-y-12">
+            <h3 class="text-2xl font-black text-slate-900 text-center tracking-tight">Pertanyaan yang Sering Diajukan</h3>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <x-card class="space-y-1.5">
-                    <h4 class="font-bold text-slate-900">Berapa lama durasi demo platform?</h4>
-                    <p class="text-xs text-slate-500 leading-relaxed">Umumnya berlangsung 20-30 menit. Sesi fokus menampilkan simulasi konfigurasi multi-properti, otomatisasi interval penagihan sewa, dan portal digital penghuni.</p>
-                </x-card>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+                <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs hover:shadow-sm transition space-y-2">
+                    <h4 class="font-bold text-slate-800 text-xs">Berapa lama durasi demo platform?</h4>
+                    <p class="text-[11px] text-slate-500 leading-relaxed font-medium">Umumnya berlangsung 20-30 menit. Sesi fokus menampilkan simulasi konfigurasi multi-properti, otomatisasi interval penagihan sewa, dan portal digital penghuni.</p>
+                </div>
                 
-                <x-card class="space-y-1.5">
-                    <h4 class="font-bold text-slate-900">Apakah tersedia bantuan pendaftaran awal (onboarding)?</h4>
-                    <p class="text-xs text-slate-500 leading-relaxed">Ya! Untuk ruang kerja dengan kapasitas di atas 50 kamar, tim teknis kami siap membantu mengimpor daftar kamar dan mendampingi integrasi staf operasional Anda.</p>
-                </x-card>
+                <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs hover:shadow-sm transition space-y-2">
+                    <h4 class="font-bold text-slate-800 text-xs">Apakah ada batasan jumlah properti saat demo?</h4>
+                    <p class="text-[11px] text-slate-500 leading-relaxed font-medium">Tidak ada batasan. Spesialis produk kami akan mensimulasikan struktur multi-properti (workspace) untuk menggambarkan kemudahan tata kelola banyak cabang.</p>
+                </div>
             </div>
         </div>
     </section>

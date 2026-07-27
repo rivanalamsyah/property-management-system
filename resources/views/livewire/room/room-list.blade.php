@@ -123,7 +123,7 @@
                 <label class="block text-xs font-semibold text-slate-400 mb-2">Filter by Facilities</label>
                 <div class="flex flex-wrap gap-2">
                     @foreach($allFacilities as $facility)
-                        <label class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl border text-xs font-semibold cursor-pointer select-none transition {{ in_array($facility->id, $filterFacilities) ?"bg-indigo-50  text-indigo-600  border-indigo-200' : 'bg-white  border-slate-200  text-slate-650  hover:bg-slate-50' }}">
+                        <label class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl border text-xs font-semibold cursor-pointer select-none transition {{ in_array($facility->id, $filterFacilities) ? 'bg-indigo-50 text-indigo-600 border-indigo-200' : 'bg-white border-slate-200 text-slate-650 hover:bg-slate-50' }}">
                             <input type="checkbox" wire:model.live="filterFacilities" value="{{ $facility->id }}" class="hidden">
                             <span>{{ $facility->name }}</span>
                         </label>
@@ -222,11 +222,16 @@
                     <!-- Actions -->
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div class="flex items-center gap-2">
-                            <x-button variant="outline" size="sm" class="px-2! py-1! text-xs" onclick="window.location.href='{{ route('rooms.edit', $room->id) }}'">
-                                Configure
+                            <x-button variant="outline" size="sm" class="inline-flex items-center justify-center p-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-600 transition cursor-pointer" onclick="window.location.href='{{ route('rooms.edit', $room->id) }}'" title="Atur Kamar" aria-label="Atur Kamar">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
                             </x-button>
-                            <x-button variant="outline" size="sm" class="px-2! py-1! text-xs text-rose-600 border-slate-200 hover:border-rose-100 hover:bg-rose-50 cursor-pointer" wire:click="confirmDelete('{{ $room->id }}')">
-                                Delete
+                            <x-button variant="outline" size="sm" class="inline-flex items-center justify-center p-2 rounded-xl text-rose-600 border border-slate-200 hover:border-rose-100 hover:bg-rose-50 cursor-pointer" wire:click="confirmDelete('{{ $room->id }}')" title="Hapus Kamar" aria-label="Hapus Kamar">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                </svg>
                             </x-button>
                         </div>
                     </td>

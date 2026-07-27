@@ -21,18 +21,18 @@
     <!-- Progress Stepper Indicator -->
     <div class="bg-white p-4 rounded-2xl border border-slate-100 mb-6 flex items-center justify-between gap-4">
         <div class="flex items-center gap-2">
-            <span class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 {{ $step >= 1 ?"bg-indigo-650 text-white' : 'bg-slate-100 text-slate-400  }}">1</span>
-            <span class="text-xs font-bold {{ $step === 1 ?"text-slate-800  : 'text-slate-400  }}">General Lease Terms</span>
+            <span class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 {{ $step >= 1 ? 'bg-indigo-650 text-white' : 'bg-slate-100 text-slate-400' }}">1</span>
+            <span class="text-xs font-bold {{ $step === 1 ? 'text-slate-800' : 'text-slate-400' }}">General Lease Terms</span>
         </div>
         <div class="h-0.5 flex-1 bg-slate-100 max-w-[120px]"></div>
         <div class="flex items-center gap-2">
-            <span class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 {{ $step >= 2 ?"bg-indigo-650 text-white' : 'bg-slate-100 text-slate-400  }}">2</span>
-            <span class="text-xs font-bold {{ $step === 2 ?"text-slate-800  : 'text-slate-400  }}">Financial Estimates</span>
+            <span class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 {{ $step >= 2 ? 'bg-indigo-650 text-white' : 'bg-slate-100 text-slate-400' }}">2</span>
+            <span class="text-xs font-bold {{ $step === 2 ? 'text-slate-800' : 'text-slate-400' }}">Financial Estimates</span>
         </div>
         <div class="h-0.5 flex-1 bg-slate-100 max-w-[120px]"></div>
         <div class="flex items-center gap-2">
-            <span class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 {{ $step >= 3 ?"bg-indigo-650 text-white' : 'bg-slate-100 text-slate-400  }}">3</span>
-            <span class="text-xs font-bold {{ $step === 3 ?"text-slate-800  : 'text-slate-400  }}">Admin Documentation</span>
+            <span class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 {{ $step >= 3 ? 'bg-indigo-650 text-white' : 'bg-slate-100 text-slate-400' }}">3</span>
+            <span class="text-xs font-bold {{ $step === 3 ? 'text-slate-800' : 'text-slate-400' }}">Admin Documentation</span>
         </div>
     </div>
 

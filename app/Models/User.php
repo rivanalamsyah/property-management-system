@@ -42,4 +42,26 @@ class User extends Authenticatable implements MustVerifyEmail
             ->where('email', $this->email)
             ->first();
     }
+
+    public function getAvatarUrlAttribute(): string
+    {
+        if ($this->avatar) {
+            return asset('storage/' . $this->avatar);
+        }
+
+        $role = $this->tenantRole();
+        if ($role) {
+            if (in_array($role->name, ['owner', 'manager', 'staff'])) {
+                return asset('assets/images/avatars/' . $role->name . '.png');
+            }
+            if ($role->name === 'tenant') {
+                $res = $this->resident();
+                if ($res) {
+                    return asset('assets/images/avatars/resident_' . ($res->gender === 'female' ? 'female' : 'male') . '.png');
+                }
+            }
+        }
+
+        return asset('assets/images/avatars/generic.png');
+    }
 }

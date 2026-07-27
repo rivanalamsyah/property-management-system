@@ -247,7 +247,7 @@
                         <div class="space-y-2">
                             @foreach($complaint->maintenanceTask->checklists as $chk)
                                 <div class="flex items-center justify-between text-xs hover:bg-slate-50/50 p-1 rounded transition">
-                                    <label class="flex items-center gap-2 cursor-pointer text-slate-700 {{ $chk->is_completed ?"line-through text-slate-400' : '' }}">
+                                    <label class="flex items-center gap-2 cursor-pointer text-slate-700 {{ $chk->is_completed ? 'line-through text-slate-400' : '' }}">
                                         <input type="checkbox" wire:click="toggleChecklistItem({{ $chk->id }})" {{ $chk->is_completed ? 'checked' : '' }}
                                             class="text-indigo-600 rounded focus:ring-indigo-500">
                                         {{ $chk->item }}
@@ -322,7 +322,7 @@
                                 
                                 <div class="relative flex space-x-3">
                                     <div>
-                                        <span class="h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white text-white text-[9px] font-bold {{ $timelineItem->color ?:"bg-indigo-500' }}">
+                                        <span class="h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white text-white text-[9px] font-bold {{ $timelineItem->color ?: 'bg-indigo-500' }}">
                                             @if($timelineItem->event === 'submitted')
                                                 +
                                             @elseif($timelineItem->event === 'assigned')

@@ -88,25 +88,25 @@
             <x-button variant="primary" size="sm" wire:click="triggerTestToast('success')">
                 <span class="flex items-center gap-1.5">
                     <span class="w-2 h-2 rounded-full bg-white"></span>
-                    Trigger Toast Sukses
+                    Picu Toast Sukses
                 </span>
             </x-button>
             <x-button variant="danger" size="sm" wire:click="triggerTestToast('error')">
                 <span class="flex items-center gap-1.5">
                     <span class="w-2 h-2 rounded-full bg-white"></span>
-                    Trigger Toast Error
+                    Picu Toast Error
                 </span>
             </x-button>
             <x-button variant="outline" size="sm" class="!text-amber-700 border-amber-200" wire:click="triggerTestToast('warning')">
                 <span class="flex items-center gap-1.5">
                     <span class="w-2 h-2 rounded-full bg-amber-500"></span>
-                    Trigger Toast Peringatan
+                    Picu Toast Peringatan
                 </span>
             </x-button>
             <x-button variant="secondary" size="sm" wire:click="triggerTestToast('info')">
                 <span class="flex items-center gap-1.5">
                     <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
-                    Trigger Toast Informasi
+                    Picu Toast Informasi
                 </span>
             </x-button>
         </div>

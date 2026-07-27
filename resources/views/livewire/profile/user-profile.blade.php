@@ -12,7 +12,7 @@
                 <!-- Avatar Upload Preview -->
                 <div class="relative">
                     <img class="h-20 w-20 rounded-2xl object-cover bg-slate-100 border border-slate-200" 
-                         src="{{ $avatar ? $avatar->temporaryUrl() : (auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=6366f1&color=fff&size=128') }}" 
+                         src="{{ $avatar ? $avatar->temporaryUrl() : auth()->user()->avatar_url }}" 
                          alt="{{ $name }}">
                     
                     <label for="avatar_upload" class="absolute -bottom-1.5 -right-1.5 p-1.5 bg-indigo-600 text-white rounded-xl shadow-lg border border-white cursor-pointer hover:bg-indigo-500 transition">

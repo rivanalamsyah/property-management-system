@@ -244,7 +244,7 @@
                                 
                                 <div class="relative flex space-x-3">
                                     <div>
-                                        <span class="h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white text-white text-xs font-bold {{ $logItem->color ?:"bg-indigo-500' }}">
+                                        <span class="h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white text-white text-xs font-bold {{ $logItem->color ?: 'bg-indigo-500' }}">
                                             @if($logItem->event === 'generated')
                                                 +
                                             @elseif($logItem->event === 'status_change')

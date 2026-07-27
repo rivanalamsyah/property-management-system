@@ -6,7 +6,7 @@
             <!-- Avatar -->
             <div class="relative inline-block mx-auto mb-4">
                 <img class="h-24 w-24 rounded-full object-cover bg-slate-100 border-2 border-indigo-600 p-0.5" 
-                     src="{{ $resident->photo ? asset('storage/' . $resident->photo) : 'https://ui-avatars.com/api/?name=' . urlencode($resident->name) . '&background=ede9fe&color=4f46e5' }}">
+                     src="{{ $resident->photo ? asset('storage/' . $resident->photo) : asset('assets/images/avatars/resident_' . ($resident->gender === 'female' ? 'female' : 'male') . '.png') }}">
                 
                 <div class="absolute bottom-0 right-0">
                     @php
@@ -320,7 +320,7 @@
                                     
                                     <div class="relative flex space-x-3">
                                         <div>
-                                            <span class="h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white text-white text-xs font-bold {{ $timelineItem->color ?:"bg-indigo-500' }}">
+                                            <span class="h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white text-white text-xs font-bold {{ $timelineItem->color ?: 'bg-indigo-500' }}">
                                                 <!-- Icon fallback text characters -->
                                                 @if($timelineItem->event === 'created')
                                                     +
