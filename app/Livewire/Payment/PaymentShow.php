@@ -63,11 +63,15 @@ class PaymentShow extends Component
 
     public function uploadResidentProof(PaymentService $service): void
     {
+        $payment = Payment::findOrFail($this->paymentId);
+        if (Auth::user()->cannot('view', $payment)) {
+            abort(403, 'Unauthorized.');
+        }
+
         $this->validate([
             'proofUpload' => ['required', 'image', 'max:4096'], // Max 4MB image
         ]);
 
-        $payment = Payment::findOrFail($this->paymentId);
         $path = $this->proofUpload->store('proofs', 'public');
 
         $service->uploadProof($payment, $path);

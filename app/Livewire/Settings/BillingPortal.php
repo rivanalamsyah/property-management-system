@@ -27,6 +27,10 @@ class BillingPortal extends Component
 
     public function mount(): void
     {
+        if (!Auth::user()->hasRole('owner') && !Auth::user()->hasRole('super_admin')) {
+            abort(403, 'Akses ditolak. Hanya pemilik ruang kerja yang dapat mengelola tagihan.');
+        }
+
         $tenant = tenant();
         if (!$tenant) {
             $this->redirect(route('dashboard'));
@@ -44,6 +48,10 @@ class BillingPortal extends Component
 
     public function saveSettings(): void
     {
+        if (!Auth::user()->hasRole('owner') && !Auth::user()->hasRole('super_admin')) {
+            abort(403, 'Akses ditolak.');
+        }
+
         $tenant = tenant();
         
         $tenant->update([
@@ -63,11 +71,15 @@ class BillingPortal extends Component
             tenantId: $tenant->id
         );
 
-        $this->dispatch('toast', ['type' => 'success', 'message' => 'Settings saved successfully!']);
+        $this->dispatch('toast', ['type' => 'success', 'message' => 'Pengaturan berhasil disimpan!']);
     }
 
     public function changePlan(string $planId): void
     {
+        if (!Auth::user()->hasRole('owner') && !Auth::user()->hasRole('super_admin')) {
+            abort(403, 'Akses ditolak.');
+        }
+
         $tenant = tenant();
         $plan = SubscriptionPlan::findOrFail($planId);
 
@@ -86,11 +98,15 @@ class BillingPortal extends Component
             tenantId: $tenant->id
         );
 
-        $this->dispatch('toast', ['type' => 'success', 'message' => "Successfully upgraded to {$plan->name}!"]);
+        $this->dispatch('toast', ['type' => 'success', 'message' => "Berhasil meningkatkan ke paket {$plan->name}!"]);
     }
 
     public function cancelSubscription(): void
     {
+        if (!Auth::user()->hasRole('owner') && !Auth::user()->hasRole('super_admin')) {
+            abort(403, 'Akses ditolak.');
+        }
+
         $tenant = tenant();
         $tenant->update([
             'subscription_status' => SubscriptionStatus::CANCELLED,
@@ -103,7 +119,7 @@ class BillingPortal extends Component
             tenantId: $tenant->id
         );
 
-        $this->dispatch('toast', ['type' => 'warning', 'message' => "Subscription cancelled. It will remain active until end of cycle."]);
+        $this->dispatch('toast', ['type' => 'warning', 'message' => "Langganan dibatalkan. Layanan akan tetap aktif hingga akhir siklus tagihan."]);
     }
 
     public function render()

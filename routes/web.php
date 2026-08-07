@@ -19,6 +19,8 @@ Route::get('/', [MarketingController::class, 'home'])->name('home');
 Route::get('/features', [MarketingController::class, 'features'])->name('features');
 Route::get('/pricing', [MarketingController::class, 'pricing'])->name('pricing');
 Route::get('/resources', [MarketingController::class, 'resources'])->name('resources');
+Route::get('/blog', [MarketingController::class, 'resources'])->name('blog.index');
+Route::get('/blog/{slug}', [MarketingController::class, 'blogDetail'])->name('blog.detail');
 Route::get('/about', [MarketingController::class, 'about'])->name('about');
 Route::get('/contact', [MarketingController::class, 'contact'])->name('contact');
 Route::get('/privacy', [MarketingController::class, 'privacy'])->name('privacy');
@@ -91,69 +93,80 @@ Route::middleware('auth')->group(function () {
     Route::middleware(['verified'])->group(function () {
         Route::get('/dashboard', Dashboard::class)->name('dashboard');
         Route::get('/dashboard/profile', UserProfile::class)->name('profile');
-        Route::get('/dashboard/settings', TenantSettings::class)->name('settings');
-        Route::get('/dashboard/settings/platform', \App\Livewire\Settings\PlatformSettings::class)->name('settings.platform');
-        Route::get('/dashboard/monitoring', \App\Livewire\Monitoring\MonitoringConsole::class)->name('monitoring.console');
-        Route::get('/dashboard/security', \App\Livewire\Security\SecurityCenter::class)->name('security.center');
-        Route::get('/dashboard/backups', \App\Livewire\Backup\BackupCenter::class)->name('backup.center');
-        Route::get('/dashboard/billing', \App\Livewire\Settings\BillingPortal::class)->name('billing');
-        Route::get('/dashboard/workspaces', \App\Livewire\Workspace\WorkspaceSearch::class)->name('workspaces.index');
 
-        // Enterprise CMS Routes
-        Route::get('/dashboard/cms', \App\Livewire\CMS\CmsDashboard::class)->name('cms.dashboard');
-        Route::get('/dashboard/cms/pages', \App\Livewire\CMS\CmsPageList::class)->name('cms.pages.index');
-        Route::get('/dashboard/cms/pages/{id}/edit', \App\Livewire\CMS\CmsPageEditor::class)->name('cms.pages.edit');
-        Route::get('/dashboard/cms/blog', \App\Livewire\CMS\CmsBlogList::class)->name('cms.blog.index');
-        Route::get('/dashboard/cms/blog/create', \App\Livewire\CMS\CmsBlogEditor::class)->name('cms.blog.create');
-        Route::get('/dashboard/cms/blog/{id}/edit', \App\Livewire\CMS\CmsBlogEditor::class)->name('cms.blog.edit');
-        Route::get('/dashboard/cms/media', \App\Livewire\CMS\CmsMediaManager::class)->name('cms.media');
-        Route::get('/dashboard/cms/menus', \App\Livewire\CMS\CmsMenuEditor::class)->name('cms.menus.edit');
-        Route::get('/dashboard/cms/globals', \App\Livewire\CMS\CmsGlobalEditor::class)->name('cms.globals');
+        // Super Admin Platform Controls
+        Route::middleware(['role:super_admin'])->group(function () {
+            Route::get('/dashboard/settings/platform', \App\Livewire\Settings\PlatformSettings::class)->name('settings.platform');
+            Route::get('/dashboard/monitoring', \App\Livewire\Monitoring\MonitoringConsole::class)->name('monitoring.console');
+            Route::get('/dashboard/security', \App\Livewire\Security\SecurityCenter::class)->name('security.center');
+            Route::get('/dashboard/backups', \App\Livewire\Backup\BackupCenter::class)->name('backup.center');
+            Route::get('/dashboard/workspaces', \App\Livewire\Workspace\WorkspaceSearch::class)->name('workspaces.index');
 
-        // Master Boarding House (Kos)
-        Route::get('/dashboard/boarding-houses', \App\Livewire\BoardingHouse\BoardingHouseList::class)->name('boarding-houses');
-        Route::get('/dashboard/boarding-houses/create', \App\Livewire\BoardingHouse\BoardingHouseForm::class)->name('boarding-houses.create');
-        Route::get('/dashboard/boarding-houses/{id}/edit', \App\Livewire\BoardingHouse\BoardingHouseForm::class)->name('boarding-houses.edit');
+            // Enterprise CMS Routes
+            Route::get('/dashboard/cms', \App\Livewire\CMS\CmsDashboard::class)->name('cms.dashboard');
+            Route::get('/dashboard/cms/pages', \App\Livewire\CMS\CmsPageList::class)->name('cms.pages.index');
+            Route::get('/dashboard/cms/pages/{id}/edit', \App\Livewire\CMS\CmsPageEditor::class)->name('cms.pages.edit');
+            Route::get('/dashboard/cms/blog', \App\Livewire\CMS\CmsBlogList::class)->name('cms.blog.index');
+            Route::get('/dashboard/cms/blog/create', \App\Livewire\CMS\CmsBlogEditor::class)->name('cms.blog.create');
+            Route::get('/dashboard/cms/blog/{id}/edit', \App\Livewire\CMS\CmsBlogEditor::class)->name('cms.blog.edit');
+            Route::get('/dashboard/cms/media', \App\Livewire\CMS\CmsMediaManager::class)->name('cms.media');
+            Route::get('/dashboard/cms/menus', \App\Livewire\CMS\CmsMenuEditor::class)->name('cms.menus.edit');
+            Route::get('/dashboard/cms/globals', \App\Livewire\CMS\CmsGlobalEditor::class)->name('cms.globals');
+        });
 
-        // Room Management
-        Route::get('/dashboard/rooms', \App\Livewire\Room\RoomList::class)->name('rooms');
-        Route::get('/dashboard/rooms/create', \App\Livewire\Room\RoomForm::class)->name('rooms.create');
-        Route::get('/dashboard/rooms/{id}/edit', \App\Livewire\Room\RoomForm::class)->name('rooms.edit');
+        // Owner / Super Admin strategic analytics & SaaS billing
+        Route::middleware(['role:owner|super_admin'])->group(function () {
+            Route::get('/dashboard/billing', \App\Livewire\Settings\BillingPortal::class)->name('billing');
+            Route::get('/dashboard/analytics', \App\Livewire\Analytics\AnalyticsDashboard::class)->name('analytics.dashboard');
+            Route::get('/dashboard/analytics/saved-presets', \App\Livewire\Analytics\SavedReportsList::class)->name('analytics.presets');
+        });
 
-        // Resident (Tenant) Management
-        Route::get('/dashboard/residents', \App\Livewire\Resident\ResidentList::class)->name('residents');
-        Route::get('/dashboard/residents/create', \App\Livewire\Resident\ResidentForm::class)->name('residents.create');
-        Route::get('/dashboard/residents/{id}/edit', \App\Livewire\Resident\ResidentForm::class)->name('residents.edit');
-        Route::get('/dashboard/residents/{id}', \App\Livewire\Resident\ResidentShow::class)->name('residents.show');
+        // Tenant Settings & Announcements (manage-settings permission)
+        Route::middleware(['permission:manage-settings'])->group(function () {
+            Route::get('/dashboard/settings', TenantSettings::class)->name('settings');
+            Route::get('/dashboard/facilities', \App\Livewire\Settings\FacilityManager::class)->name('facilities');
+            Route::get('/dashboard/announcements', \App\Livewire\Announcement\AnnouncementList::class)->name('announcements');
+            Route::get('/dashboard/announcements/{id}', \App\Livewire\Announcement\AnnouncementShow::class)->name('announcements.show');
+        });
 
-        // Contract Management
-        Route::get('/dashboard/contracts', \App\Livewire\Contract\ContractList::class)->name('contracts');
-        Route::get('/dashboard/contracts/create', \App\Livewire\Contract\ContractForm::class)->name('contracts.create');
-        Route::get('/dashboard/contracts/{id}/edit', \App\Livewire\Contract\ContractForm::class)->name('contracts.edit');
-        Route::get('/dashboard/contracts/{id}', \App\Livewire\Contract\ContractShow::class)->name('contracts.show');
+        // Room & Occupancy Management (manage-rooms permission)
+        Route::middleware(['permission:manage-rooms'])->group(function () {
+            Route::get('/dashboard/boarding-houses', \App\Livewire\BoardingHouse\BoardingHouseList::class)->name('boarding-houses');
+            Route::get('/dashboard/boarding-houses/create', \App\Livewire\BoardingHouse\BoardingHouseForm::class)->name('boarding-houses.create');
+            Route::get('/dashboard/boarding-houses/{id}/edit', \App\Livewire\BoardingHouse\BoardingHouseForm::class)->name('boarding-houses.edit');
 
-        // Billing Management
-        Route::get('/dashboard/invoices', \App\Livewire\Billing\BillingList::class)->name('invoices');
-        Route::get('/dashboard/invoices/{id}', \App\Livewire\Billing\InvoiceShow::class)->name('invoices.show');
+            Route::get('/dashboard/rooms', \App\Livewire\Room\RoomList::class)->name('rooms');
+            Route::get('/dashboard/rooms/create', \App\Livewire\Room\RoomForm::class)->name('rooms.create');
+            Route::get('/dashboard/rooms/{id}/edit', \App\Livewire\Room\RoomForm::class)->name('rooms.edit');
 
-        // Payment Management
-        Route::get('/dashboard/payments', \App\Livewire\Payment\PaymentList::class)->name('payments');
-        Route::get('/dashboard/payments/{id}', \App\Livewire\Payment\PaymentShow::class)->name('payments.show');
+            Route::get('/dashboard/residents', \App\Livewire\Resident\ResidentList::class)->name('residents');
+            Route::get('/dashboard/residents/create', \App\Livewire\Resident\ResidentForm::class)->name('residents.create');
+            Route::get('/dashboard/residents/{id}/edit', \App\Livewire\Resident\ResidentForm::class)->name('residents.edit');
+            Route::get('/dashboard/residents/{id}', \App\Livewire\Resident\ResidentShow::class)->name('residents.show');
 
-        // Complaint & Maintenance Management
-        Route::get('/dashboard/complaints', \App\Livewire\Complaint\ComplaintList::class)->name('complaints');
-        Route::get('/dashboard/complaints/{id}', \App\Livewire\Complaint\ComplaintShow::class)->name('complaints.show');
+            Route::get('/dashboard/contracts', \App\Livewire\Contract\ContractList::class)->name('contracts');
+            Route::get('/dashboard/contracts/create', \App\Livewire\Contract\ContractForm::class)->name('contracts.create');
+            Route::get('/dashboard/contracts/{id}/edit', \App\Livewire\Contract\ContractForm::class)->name('contracts.edit');
+            Route::get('/dashboard/contracts/{id}', \App\Livewire\Contract\ContractShow::class)->name('contracts.show');
+        });
 
-        // Facilities Management
-        Route::get('/dashboard/facilities', \App\Livewire\Settings\FacilityManager::class)->name('facilities');
+        // Invoicing & Payments (manage-payments permission)
+        Route::middleware(['permission:manage-payments'])->group(function () {
+            Route::get('/dashboard/invoices', \App\Livewire\Billing\BillingList::class)->name('invoices');
+            Route::get('/dashboard/invoices/{id}', \App\Livewire\Billing\InvoiceShow::class)->name('invoices.show');
+            Route::get('/dashboard/payments', \App\Livewire\Payment\PaymentList::class)->name('payments');
+            Route::get('/dashboard/payments/{id}', \App\Livewire\Payment\PaymentShow::class)->name('payments.show');
+        });
 
-        // Announcement & Broadcast Management
-        Route::get('/dashboard/announcements', \App\Livewire\Announcement\AnnouncementList::class)->name('announcements');
-        Route::get('/dashboard/announcements/{id}', \App\Livewire\Announcement\AnnouncementShow::class)->name('announcements.show');
-
-        // Reports & Business Intelligence Analytics
-        Route::get('/dashboard/analytics', \App\Livewire\Analytics\AnalyticsDashboard::class)->name('analytics.dashboard');
-        Route::get('/dashboard/analytics/saved-presets', \App\Livewire\Analytics\SavedReportsList::class)->name('analytics.presets');
+        // Complaints (manage-complaints permission)
+        Route::middleware(['permission:manage-complaints'])->group(function () {
+            Route::get('/dashboard/complaints', \App\Livewire\Complaint\ComplaintList::class)->name('complaints');
+            Route::get('/dashboard/complaints/{id}', \App\Livewire\Complaint\ComplaintShow::class)->name('complaints.show');
+        });
     });
 
 });
+
+// Wildcard fallback route for public boarding house landing pages
+Route::get('/{slug}', [App\Http\Controllers\PublicBoardingHouseController::class, 'show'])->name('public.boarding-house');
+

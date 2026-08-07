@@ -68,4 +68,39 @@ class MarketingWebsiteTest extends TestCase
             ->assertHasNoErrors()
             ->assertSet('successMessage', 'Terima kasih! Permintaan demo Anda telah berhasil terdaftar. Tim spesialis kami akan menghubungi Anda dalam waktu 1x24 jam.');
     }
+
+    public function test_blog_index_and_details_load(): void
+    {
+        // 1. Seed or create dummy article
+        $category = \App\Models\CmsBlogCategory::create([
+            'name' => 'Test Category',
+            'slug' => 'test-category',
+        ]);
+
+        $article = \App\Models\CmsBlogArticle::create([
+            'title' => 'Test Article Title',
+            'slug' => 'test-article-title',
+            'content' => '# Dynamic content test',
+            'status' => \App\Enums\CmsPublishStatus::PUBLISHED,
+            'published_at' => now()->subDay(),
+        ]);
+        $article->categories()->attach($category->id);
+
+        // 2. Assert blog index loads successfully
+        $response = $this->get('/blog');
+        $response->assertStatus(200);
+        $response->assertSee('Test Article Title');
+        $response->assertSee('Test Category');
+
+        // 3. Assert blog detail loads successfully
+        $response = $this->get('/blog/test-article-title');
+        $response->assertStatus(200);
+        $response->assertSee('Test Article Title');
+        $response->assertSee('Dynamic content test');
+
+        // 4. Assert wrong slug returns 404
+        $response = $this->get('/blog/wrong-slug');
+        $response->assertStatus(404);
+    }
 }
+

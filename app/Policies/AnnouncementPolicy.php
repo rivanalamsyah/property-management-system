@@ -12,7 +12,7 @@ class AnnouncementPolicy
 
     public function viewAny(User $user): bool
     {
-        return tenant() !== null;
+        return tenant() !== null && $user->hasPermission('manage-settings');
     }
 
     public function view(User $user, Announcement $announcement): bool
@@ -26,7 +26,7 @@ class AnnouncementPolicy
 
     public function create(User $user): bool
     {
-        return tenant() !== null;
+        return tenant() !== null && $user->hasPermission('manage-settings');
     }
 
     public function update(User $user, Announcement $announcement): bool

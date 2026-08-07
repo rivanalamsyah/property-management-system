@@ -176,6 +176,9 @@ class ResidentForm extends Component
                 $service->updateResident($resident, $data);
                 $this->dispatch('toast', ['type' => 'success', 'message' => 'Resident record updated.']);
             } else {
+                if (Auth::user()->cannot('create', Resident::class)) {
+                    abort(403, 'Unauthorized.');
+                }
                 $resident = $service->createResident($data);
                 $this->dispatch('toast', ['type' => 'success', 'message' => 'Resident registered! Proceed to configure check-in.']);
             }

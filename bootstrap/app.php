@@ -26,6 +26,12 @@ return Application::configure(basePath: dirname(__DIR__))
         // Run SRE performance monitoring globally
         $middleware->append(\App\Http\Middleware\MonitoringMiddleware::class);
 
+        $middleware->alias([
+            'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
+            'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+            'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+        ]);
+
         $middleware->web(append: [
             \App\Http\Middleware\TenantMiddleware::class,
         ]);

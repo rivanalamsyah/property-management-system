@@ -21,7 +21,7 @@ class MonitoringConsole extends Component
     public function mount(): void
     {
         // Restriction check: only owners or administrators allowed
-        if (!Auth::user()->hasRole('owner')) {
+        if (!Auth::user()->hasRole('super_admin')) {
             abort(403, 'Unauthorized. Super Admin access only.');
         }
     }

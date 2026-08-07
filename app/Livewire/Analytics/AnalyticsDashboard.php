@@ -27,6 +27,9 @@ class AnalyticsDashboard extends Component
 
     public function mount(): void
     {
+        if (!Auth::user()->hasRole('owner') && !Auth::user()->hasRole('super_admin')) {
+            abort(403, 'Akses ditolak. Anda tidak memiliki wewenang untuk melihat laporan keuangan strategis.');
+        }
         $this->year = date('Y');
     }
 
@@ -37,6 +40,10 @@ class AnalyticsDashboard extends Component
 
     public function exportCSV(AnalyticsService $service)
     {
+        if (!Auth::user()->hasRole('owner') && !Auth::user()->hasRole('super_admin')) {
+            abort(403, 'Akses ditolak.');
+        }
+
         $filters = [
             'boarding_house_id' => $this->boarding_house_id,
             'year' => $this->year,
@@ -68,6 +75,10 @@ class AnalyticsDashboard extends Component
 
     public function saveCurrentReport(): void
     {
+        if (!Auth::user()->hasRole('owner') && !Auth::user()->hasRole('super_admin')) {
+            abort(403, 'Akses ditolak.');
+        }
+
         $this->validate([
             'reportName' => ['required', 'string', 'max:100'],
             'reportDescription' => ['nullable', 'string', 'max:250'],

@@ -3,14 +3,14 @@
     <!-- Title & Action -->
     <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-            <h1 class="text-2xl font-bold tracking-tight text-slate-900">Facility Catalog</h1>
-            <p class="text-sm text-slate-500 mt-1">Manage global default and custom tenant facilities for rooms and boarding houses.</p>
+            <h1 class="text-2xl font-bold tracking-tight text-slate-900">Katalog Fasilitas</h1>
+            <p class="text-sm text-slate-500 mt-1">Kelola fasilitas bawaan sistem dan kustom untuk kamar dan properti kos.</p>
         </div>
         <div class="flex-shrink-0">
             <x-button variant="primary" size="sm" wire:click="openCreateModal">
                 <span class="flex items-center gap-1.5">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                    Add Facility
+                    Tambah Fasilitas
                 </span>
             </x-button>
         </div>
@@ -23,7 +23,7 @@
             <div class="flex-1 w-full relative">
                 <input wire:model.live.debounce.250ms="search" type="text"
                     class="w-full pl-10 pr-4 py-2 bg-slate-50/50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
-                    placeholder="Search by facility name or description...">
+                    placeholder="Cari berdasarkan nama atau deskripsi fasilitas...">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                 </div>
@@ -33,18 +33,18 @@
             <div class="w-full sm:w-48">
                 <select wire:model.live="filterCategory"
                     class="w-full px-4 py-2 bg-slate-50/50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm">
-                    <option value="">All Categories</option>
-                    <option value="Room">Room</option>
-                    <option value="General">General</option>
-                    <option value="Security">Security</option>
-                    <option value="Shared">Shared</option>
+                    <option value="">Semua Kategori</option>
+                    <option value="Room">Kamar</option>
+                    <option value="General">Umum</option>
+                    <option value="Security">Keamanan</option>
+                    <option value="Shared">Bersama</option>
                 </select>
             </div>
         </div>
     </x-card>
 
     <!-- Table List -->
-    <x-table :headers="['Order', 'Icon', 'Facility Name', 'Category', 'Scope', 'Status', 'Actions']">
+    <x-table :headers="['Urutan', 'Ikon', 'Nama Fasilitas', 'Kategori', 'Cakupan', 'Status', 'Aksi']">
         @forelse($facilities as $facility)
             <tr class="hover:bg-slate-50/50 transition">
                 <!-- Sorting Display Order -->
@@ -94,9 +94,9 @@
                 <!-- Scope -->
                 <td class="px-6 py-4 whitespace-nowrap text-sm">
                     @if($facility->tenant_id === null)
-                        <x-badge variant="info">Global Default</x-badge>
+                        <x-badge variant="info">Bawaan Sistem</x-badge>
                     @else
-                        <x-badge variant="neutral">Custom Tenant</x-badge>
+                        <x-badge variant="neutral">Kustom Ruang Kerja</x-badge>
                     @endif
                 </td>
 
@@ -105,11 +105,11 @@
                     @if($facility->tenant_id !== null)
                         <button wire:click="toggleStatus({{ $facility->id }})" class="cursor-pointer">
                             <x-badge :variant="$facility->is_active ? 'success' : 'danger'">
-                                {{ $facility->is_active ? 'Active' : 'Inactive' }}
+                                {{ $facility->is_active ? 'Aktif' : 'Tidak Aktif' }}
                             </x-badge>
                         </button>
                     @else
-                        <x-badge variant="success">Active</x-badge>
+                        <x-badge variant="success">Aktif</x-badge>
                     @endif
                 </td>
 
@@ -128,7 +128,7 @@
                                 </svg>
                             </x-button>
                         @else
-                            <span class="text-xs text-slate-400 italic">Locked</span>
+                             <span class="text-xs text-slate-400 italic">Terkunci</span>
                         @endif
                     </div>
                 </td>
@@ -136,7 +136,7 @@
         @empty
             <tr>
                 <td colspan="7" class="p-0">
-                    <x-empty-state title="No facilities found" description="Create a custom facility for your rooms or boarding house listings."></x-empty-state>
+                    <x-empty-state title="Fasilitas tidak ditemukan" description="Buat fasilitas kustom untuk kamar atau properti kos Anda."></x-empty-state>
                 </td>
             </tr>
         @endforelse
@@ -148,14 +148,14 @@
     </div>
 
     <!-- Form Modal -->
-    <x-modal wire:model="showFormModal" title="{{ $facilityId ? 'Edit Custom Facility' : 'Create Custom Facility' }}" maxWidth="md">
+    <x-modal wire:model="showFormModal" title="{{ $facilityId ? 'Ubah Fasilitas Kustom' : 'Buat Fasilitas Kustom' }}" maxWidth="md">
         <form wire:submit="saveFacility" class="space-y-4">
             <!-- Facility Name -->
             <div>
-                <label for="fac_name" class="block text-sm font-medium text-slate-700 mb-1.5">Facility Name</label>
+                <label for="fac_name" class="block text-sm font-medium text-slate-700 mb-1.5">Nama Fasilitas</label>
                 <input wire:model="name" id="fac_name" type="text" required
                     class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
-                    placeholder="e.g. High-Speed Wi-Fi, Private Bathroom">
+                    placeholder="cth. Wi-Fi Kecepatan Tinggi, Kamar Mandi Dalam">
                 @error('name')
                     <span class="text-xs text-rose-500 mt-1 block">{{ $message }}</span>
                 @enderror
@@ -164,14 +164,14 @@
             <!-- Icon & Category -->
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <label for="fac_icon" class="block text-sm font-medium text-slate-700 mb-1.5">Icon Visual</label>
+                    <label for="fac_icon" class="block text-sm font-medium text-slate-700 mb-1.5">Ikon Visual</label>
                     <select wire:model="icon" id="fac_icon"
                         class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm">
-                        <option value="wifi">WiFi Waves</option>
-                        <option value="tv">TV / Display</option>
-                        <option value="bath">Shower / Bathroom</option>
-                        <option value="parking">Parking Slot</option>
-                        <option value="key">Curfew key</option>
+                        <option value="wifi">Gelombang WiFi</option>
+                        <option value="tv">TV / Monitor</option>
+                        <option value="bath">Kamar Mandi / Shower</option>
+                        <option value="parking">Tempat Parkir</option>
+                        <option value="key">Kunci Jam Malam</option>
                     </select>
                     @error('icon')
                         <span class="text-xs text-rose-500 mt-1 block">{{ $message }}</span>
@@ -179,13 +179,13 @@
                 </div>
 
                 <div>
-                    <label for="fac_category" class="block text-sm font-medium text-slate-700 mb-1.5">Category</label>
+                    <label for="fac_category" class="block text-sm font-medium text-slate-700 mb-1.5">Kategori</label>
                     <select wire:model="category" id="fac_category"
                         class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm">
-                        <option value="Room">Room specific</option>
-                        <option value="General">General facilities</option>
-                        <option value="Security">Security settings</option>
-                        <option value="Shared">Shared spaces</option>
+                        <option value="Room">Khusus Kamar</option>
+                        <option value="General">Fasilitas Umum</option>
+                        <option value="Security">Pengaturan Keamanan</option>
+                        <option value="Shared">Ruang Bersama</option>
                     </select>
                     @error('category')
                         <span class="text-xs text-rose-500 mt-1 block">{{ $message }}</span>
@@ -195,10 +195,10 @@
 
             <!-- Description -->
             <div>
-                <label for="fac_description" class="block text-sm font-medium text-slate-700 mb-1.5">Description</label>
+                <label for="fac_description" class="block text-sm font-medium text-slate-700 mb-1.5">Deskripsi</label>
                 <textarea wire:model="description" id="fac_description" rows="3"
                     class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
-                    placeholder="Short summary of this facility characteristics..."></textarea>
+                    placeholder="Ringkasan singkat karakteristik fasilitas ini..."></textarea>
                 @error('description')
                     <span class="text-xs text-rose-500 mt-1 block">{{ $message }}</span>
                 @enderror
@@ -209,27 +209,27 @@
                 <input wire:model="is_active" id="fac_active" type="checkbox"
                     class="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 bg-slate-50/50">
                 <label for="fac_active" class="ml-2 block text-sm text-slate-700 select-none">
-                    Mark this custom facility as active
+                    Tandai fasilitas kustom ini sebagai aktif
                 </label>
             </div>
 
             <!-- Actions footer -->
             <div class="flex justify-end gap-3 pt-2">
-                <x-button variant="outline" size="sm" type="button" @click="show = false">Cancel</x-button>
-                <x-button variant="primary" size="sm" type="submit" loading="saveFacility">Save</x-button>
+                <x-button variant="outline" size="sm" type="button" @click="show = false">Batal</x-button>
+                <x-button variant="primary" size="sm" type="submit" loading="saveFacility">Simpan</x-button>
             </div>
         </form>
     </x-modal>
 
     <!-- Delete Confirmation Modal -->
-    <x-modal wire:model="showDeleteModal" title="Delete Custom Facility" maxWidth="md">
+    <x-modal wire:model="showDeleteModal" title="Hapus Fasilitas Kustom" maxWidth="md">
         <div class="space-y-4">
             <p class="text-sm text-slate-500">
-                Are you sure you want to delete this custom facility? Room allocations and public pages referencing it will be unlinked. This cannot be undone.
+                Apakah Anda yakin ingin menghapus fasilitas kustom ini? Alokasi kamar dan halaman publik yang merujuknya akan dilepas. Tindakan ini tidak dapat dibatalkan.
             </p>
             <div class="flex justify-end gap-3 pt-2">
-                <x-button variant="outline" size="sm" type="button" @click="show = false">Cancel</x-button>
-                <x-button variant="danger" size="sm" type="button" wire:click="deleteFacility">Delete</x-button>
+                <x-button variant="outline" size="sm" type="button" @click="show = false">Batal</x-button>
+                <x-button variant="danger" size="sm" type="button" wire:click="deleteFacility">Hapus</x-button>
             </div>
         </div>
     </x-modal>

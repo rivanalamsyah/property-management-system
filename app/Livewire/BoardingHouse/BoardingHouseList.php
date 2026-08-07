@@ -84,7 +84,7 @@ class BoardingHouseList extends Component
 
     public function render()
     {
-        $query = BoardingHouse::query()
+        $query = BoardingHouse::withCount(['facilities', 'rules', 'galleries'])
             ->when($this->search, function ($q) {
                 $q->where('name', 'like', '%' . $this->search . '%')
                   ->orWhere('city', 'like', '%' . $this->search . '%')

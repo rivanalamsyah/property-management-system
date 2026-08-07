@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
 
 class Invoice extends Model
 {
@@ -34,32 +35,93 @@ class Invoice extends Model
     ];
 
     protected $casts = [
-        'status' => InvoiceStatus::class,
-        'invoice_date' => 'date',
-        'due_date' => 'date',
-        'billing_period_start' => 'date',
-        'billing_period_end' => 'date',
-        'subtotal' => 'decimal:2',
-        'discount' => 'decimal:2',
-        'penalty' => 'decimal:2',
-        'grand_total' => 'decimal:2',
+        'status'                => InvoiceStatus::class,
+        'invoice_date'          => 'date',
+        'due_date'              => 'date',
+        'billing_period_start'  => 'date',
+        'billing_period_end'    => 'date',
+        'subtotal'              => 'decimal:2',
+        'discount'              => 'decimal:2',
+        'penalty'               => 'decimal:2',
+        'grand_total'           => 'decimal:2',
     ];
 
-    protected static function booted()
+    protected static function booted(): void
     {
-        static::creating(function ($invoice) {
+        static::creating(function (Invoice $invoice) {
             if (empty($invoice->invoice_number)) {
-                $year = date('Y');
-                // Calculate next increment offset under active workspace
-                $count = static::where('tenant_id', $invoice->tenant_id)
-                    ->whereYear('created_at', $year)
-                    ->count();
-                
-                $sequence = str_pad($count + 1, 6, '0', STR_PAD_LEFT);
-                $invoice->invoice_number = "INV-{$year}-{$sequence}";
+                $invoice->invoice_number = static::generateNumber($invoice->tenant_id, 'INV');
             }
         });
     }
+
+    /**
+     * Thread-safe sequence number generator using SELECT FOR UPDATE.
+     */
+    public static function generateNumber(string $tenantId, string $prefix): string
+    {
+        return DB::transaction(function () use ($tenantId, $prefix) {
+            $year = date('Y');
+            $count = static::where('tenant_id', $tenantId)
+                ->whereYear('created_at', $year)
+                ->lockForUpdate()
+                ->count();
+            $sequence = str_pad($count + 1, 6, '0', STR_PAD_LEFT);
+            return "{$prefix}-{$year}-{$sequence}";
+        });
+    }
+
+    // ─── Scopes ────────────────────────────────────────────────────────────────
+
+    public function scopePending($query)
+    {
+        return $query->where('status', InvoiceStatus::PENDING);
+    }
+
+    public function scopeOverdue($query)
+    {
+        return $query->where('status', InvoiceStatus::OVERDUE);
+    }
+
+    public function scopePaid($query)
+    {
+        return $query->where('status', InvoiceStatus::PAID);
+    }
+
+    public function scopeDueToday($query)
+    {
+        return $query->whereDate('due_date', today());
+    }
+
+    public function scopeForCurrentMonth($query)
+    {
+        return $query->whereMonth('invoice_date', now()->month)
+                     ->whereYear('invoice_date', now()->year);
+    }
+
+    // ─── Accessors ─────────────────────────────────────────────────────────────
+
+    /**
+     * Whether this invoice is currently overdue (regardless of status field).
+     */
+    public function getIsOverdueAttribute(): bool
+    {
+        return $this->due_date?->isPast() && !in_array($this->status, [
+            InvoiceStatus::PAID,
+            InvoiceStatus::CANCELLED,
+            InvoiceStatus::VOIDED,
+        ]);
+    }
+
+    /**
+     * Net payable amount after discount.
+     */
+    public function getNetTotalAttribute(): float
+    {
+        return max(0, (float) $this->grand_total);
+    }
+
+    // ─── Relationships ─────────────────────────────────────────────────────────
 
     public function boardingHouse(): BelongsTo
     {
@@ -84,6 +146,11 @@ class Invoice extends Model
     public function items(): HasMany
     {
         return $this->hasMany(InvoiceItem::class);
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class);
     }
 
     public function timeline(): HasMany

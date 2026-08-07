@@ -48,6 +48,10 @@ class PlatformSettings extends Component
 
     public function mount(): void
     {
+        if (!Auth::user()->hasRole('super_admin')) {
+            abort(403, 'Unauthorized. Super Admin access only.');
+        }
+
         $service = app(PlatformSettingsService::class);
 
         // Predefined list of settings keys to initialize
@@ -119,7 +123,7 @@ class PlatformSettings extends Component
             $service->set($key, $value);
         }
 
-        $this->dispatch('toast', ['type' => 'success', 'message' => 'Settings saved successfully!']);
+        $this->dispatch('toast', ['type' => 'success', 'message' => 'Pengaturan berhasil disimpan!']);
     }
 
     /**
@@ -134,7 +138,7 @@ class PlatformSettings extends Component
             tenantId: null,
             userId: Auth::id()
         );
-        $this->dispatch('toast', ['type' => 'success', 'message' => 'Application cache cleared!']);
+        $this->dispatch('toast', ['type' => 'success', 'message' => 'Cache aplikasi berhasil dibersihkan!']);
     }
 
     /**
@@ -151,9 +155,9 @@ class PlatformSettings extends Component
                 $message->to($this->testEmailAddress)
                         ->subject('Kosan SMTP Testing Connection');
             });
-            $this->dispatch('toast', ['type' => 'success', 'message' => 'Test email sent successfully!']);
+            $this->dispatch('toast', ['type' => 'success', 'message' => 'Email uji coba berhasil dikirim!']);
         } catch (\Exception $e) {
-            $this->dispatch('toast', ['type' => 'error', 'message' => 'Email failed: ' . $e->getMessage()]);
+            $this->dispatch('toast', ['type' => 'error', 'message' => 'Email gagal dikirim: ' . $e->getMessage()]);
         }
     }
 
@@ -163,7 +167,7 @@ class PlatformSettings extends Component
     public function clearAudits(): void
     {
         ActivityLog::where('event', 'like', 'settings.%')->delete();
-        $this->dispatch('toast', ['type' => 'warning', 'message' => 'Configuration settings activity logs cleared.']);
+        $this->dispatch('toast', ['type' => 'warning', 'message' => 'Log aktivitas pengaturan konfigurasi berhasil dibersihkan.']);
     }
 
     /**
@@ -213,9 +217,9 @@ class PlatformSettings extends Component
             $this->mount();
             $this->importFile = null;
 
-            $this->dispatch('toast', ['type' => 'success', 'message' => 'Configurations imported successfully!']);
+            $this->dispatch('toast', ['type' => 'success', 'message' => 'Konfigurasi berhasil diimpor!']);
         } catch (\Exception $e) {
-            $this->dispatch('toast', ['type' => 'error', 'message' => 'Import failed: ' . $e->getMessage()]);
+            $this->dispatch('toast', ['type' => 'error', 'message' => 'Impor gagal: ' . $e->getMessage()]);
         }
     }
 

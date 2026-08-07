@@ -7,6 +7,10 @@ use App\Models\CmsGlobal;
 use App\Models\CmsFaq;
 use App\Models\CmsTestimonial;
 use App\Models\CmsPartner;
+use App\Models\CmsBlogArticle;
+use App\Models\CmsBlogCategory;
+use App\Models\CmsBlogTag;
+use App\Enums\CmsPublishStatus;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -91,7 +95,7 @@ class MarketingController extends Controller
         ]);
     }
 
-    public function resources()
+    public function resources(Request $request)
     {
         $page = null;
         $globals = [];
@@ -100,11 +104,121 @@ class MarketingController extends Controller
             $globals = $this->getGlobals();
         } catch (\Exception $e) {}
 
+        // Query published articles
+        $query = CmsBlogArticle::with(['categories', 'tags'])
+            ->where('status', CmsPublishStatus::PUBLISHED)
+            ->where(function ($q) {
+                $q->whereNull('published_at')
+                  ->orWhere('published_at', '<=', now());
+            })
+            ->where(function ($q) {
+                $q->whereNull('expired_at')
+                  ->orWhere('expired_at', '>', now());
+            });
+
+        // Filter by category
+        if ($request->has('category') && !empty($request->category)) {
+            $query->whereHas('categories', function ($q) use ($request) {
+                $q->where('slug', $request->category);
+            });
+        }
+
+        // Search by keyword
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', '%' . $search . '%')
+                  ->orWhere('content', 'like', '%' . $search . '%')
+                  ->orWhere('excerpt', 'like', '%' . $search . '%');
+            });
+        }
+
+        // Get paginated articles
+        $articles = $query->orderBy('published_at', 'desc')->paginate(9)->withQueryString();
+
+        // Get categories list for filter bar
+        $categories = CmsBlogCategory::withCount(['articles' => function ($q) {
+            $q->where('status', CmsPublishStatus::PUBLISHED);
+        }])->get();
+
+        // Get featured article (if any, use the latest one)
+        $featuredArticle = null;
+        if (!$request->has('category') && !$request->has('search')) {
+            $featuredArticle = $articles->first();
+        }
+
+        // Set canonical URL dynamically
+        $canonical = $request->routeIs('blog.index') ? route('blog.index') : route('resources');
+
         return view('marketing.resources', [
             'meta_title' => $page?->seo_title ?? 'Pusat Panduan, Artikel & Insight Pengelolaan Kos - Kosan',
             'meta_description' => $page?->seo_description ?? 'Temukan panduan praktis, studi kasus, dan tips meningkatkan tingkat okupansi serta efisiensi penagihan kos dari pakar manajemen hunian.',
-            'canonical' => route('resources'),
+            'canonical' => $canonical,
             'globals' => $globals,
+            'articles' => $articles,
+            'categories' => $categories,
+            'featuredArticle' => $featuredArticle,
+            'activeCategory' => $request->category,
+            'searchQuery' => $request->search,
+        ]);
+    }
+
+    public function blogDetail($slug)
+    {
+        $article = CmsBlogArticle::with(['categories', 'tags'])
+            ->where('slug', $slug)
+            ->where('status', CmsPublishStatus::PUBLISHED)
+            ->where(function ($q) {
+                $q->whereNull('published_at')
+                  ->orWhere('published_at', '<=', now());
+            })
+            ->where(function ($q) {
+                $q->whereNull('expired_at')
+                  ->orWhere('expired_at', '>', now());
+            })
+            ->firstOrFail();
+
+        $globals = $this->getGlobals();
+
+        // Fetch related articles from same categories, excluding current one
+        $categoryIds = $article->categories->pluck('id')->toArray();
+        $relatedArticles = CmsBlogArticle::where('id', '!=', $article->id)
+            ->where('status', CmsPublishStatus::PUBLISHED)
+            ->where(function ($q) {
+                $q->whereNull('published_at')
+                  ->orWhere('published_at', '<=', now());
+            })
+            ->where(function ($q) {
+                $q->whereNull('expired_at')
+                  ->orWhere('expired_at', '>', now());
+            })
+            ->whereHas('categories', function ($q) use ($categoryIds) {
+                $q->whereIn('cms_blog_categories.id', $categoryIds);
+            })
+            ->orderBy('published_at', 'desc')
+            ->take(3)
+            ->get();
+
+        // Fallback to latest articles if no categories overlap
+        if ($relatedArticles->isEmpty()) {
+            $relatedArticles = CmsBlogArticle::where('id', '!=', $article->id)
+                ->where('status', CmsPublishStatus::PUBLISHED)
+                ->where(function ($q) {
+                    $q->whereNull('published_at')
+                      ->orWhere('published_at', '<=', now());
+                })
+                ->orderBy('published_at', 'desc')
+                ->take(3)
+                ->get();
+        }
+
+        return view('marketing.blog-detail', [
+            'meta_title' => $article->seo_title ?: ($article->title . ' | Kosan'),
+            'meta_description' => $article->seo_description ?: $article->excerpt,
+            'canonical' => route('blog.detail', ['slug' => $article->slug]),
+            'globals' => $globals,
+            'article' => $article,
+            'relatedArticles' => $relatedArticles,
         ]);
     }
 

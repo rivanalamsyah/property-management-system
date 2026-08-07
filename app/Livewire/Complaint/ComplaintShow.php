@@ -147,6 +147,11 @@ class ComplaintShow extends Component
 
     public function toggleChecklistItem(int $id): void
     {
+        $complaint = Complaint::findOrFail($this->complaintId);
+        if (Auth::user()->cannot('update', $complaint)) {
+            abort(403, 'Unauthorized.');
+        }
+
         $item = MaintenanceChecklist::findOrFail($id);
         $item->update(['is_completed' => !$item->is_completed]);
 
@@ -157,6 +162,10 @@ class ComplaintShow extends Component
     public function addChecklistItem(): void
     {
         $complaint = Complaint::findOrFail($this->complaintId);
+        if (Auth::user()->cannot('update', $complaint)) {
+            abort(403, 'Unauthorized.');
+        }
+
         if (!$complaint->maintenanceTask) {
             return;
         }
@@ -176,6 +185,11 @@ class ComplaintShow extends Component
 
     public function deleteChecklistItem(int $id): void
     {
+        $complaint = Complaint::findOrFail($this->complaintId);
+        if (Auth::user()->cannot('update', $complaint)) {
+            abort(403, 'Unauthorized.');
+        }
+
         $item = MaintenanceChecklist::findOrFail($id);
         $item->delete();
         $this->dispatch('toast', ['type' => 'success', 'message' => 'Checklist item removed.']);
@@ -230,9 +244,20 @@ class ComplaintShow extends Component
             'maintenanceTask.checklists', 'maintenanceTask.assignedStaff'
         ])->findOrFail($this->complaintId);
 
-        $staffUsers = User::where('role', 'staff')
-            ->orWhere('role', 'owner')
-            ->get();
+        $tenant = tenant();
+        $staffUsers = collect();
+
+        if ($tenant) {
+            $staffUsers = User::whereHas('tenants', function ($query) use ($tenant) {
+                $query->where('tenant_user.tenant_id', $tenant->id)
+                    ->where('tenant_user.is_active', true)
+                    ->whereIn('tenant_user.role_id', function ($sub) {
+                        $sub->select('id')
+                            ->from('roles')
+                            ->whereIn('name', ['staff', 'owner']);
+                    });
+            })->get();
+        }
 
         return view('livewire.complaint.complaint-show', [
             'complaint' => $complaint,

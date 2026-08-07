@@ -38,6 +38,8 @@ class BillingService
                 tenantId: $invoice->tenant_id
             );
 
+            $this->clearMetricsCache($invoice->tenant_id);
+
             return $invoice;
         });
     }
@@ -132,6 +134,8 @@ class BillingService
                 tenantId: $invoice->tenant_id
             );
 
+            $this->clearMetricsCache($invoice->tenant_id);
+
             return $invoice;
         });
     }
@@ -178,6 +182,8 @@ class BillingService
                 description: "Applied late penalty to invoice {$invoice->invoice_number}",
                 tenantId: $invoice->tenant_id
             );
+
+            $this->clearMetricsCache($invoice->tenant_id);
         });
     }
 
@@ -201,6 +207,8 @@ class BillingService
                 description: "Updated invoice status to: {$status->value}",
                 tenantId: $invoice->tenant_id
             );
+
+            $this->clearMetricsCache($invoice->tenant_id);
         });
     }
 
@@ -220,6 +228,8 @@ class BillingService
                 description: "Deleted invoice: {$number}",
                 tenantId: $tenantId
             );
+
+            $this->clearMetricsCache($tenantId);
         });
     }
 
@@ -252,5 +262,11 @@ class BillingService
             'icon' => $icon ?? 'check',
             'color' => $color ?? 'bg-indigo-500',
         ]);
+    }
+
+    private function clearMetricsCache(?string $tenantId): void
+    {
+        $tenantId = $tenantId ?: 'global';
+        cache()->forget("billing_metrics:{$tenantId}");
     }
 }

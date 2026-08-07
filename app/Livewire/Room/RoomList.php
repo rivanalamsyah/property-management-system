@@ -121,7 +121,7 @@ class RoomList extends Component
     {
         $room = Room::findOrFail($id);
         if (Auth::user()->cannot('delete', $room)) {
-            $this->dispatch('toast', ['type' => 'error', 'message' => 'Unauthorized action or occupied room.']);
+            $this->dispatch('toast', ['type' => 'error', 'message' => 'Tindakan tidak sah atau kamar sedang terisi.']);
             return;
         }
 
@@ -135,13 +135,13 @@ class RoomList extends Component
             $room = Room::findOrFail($this->deletingId);
 
             if (Auth::user()->cannot('delete', $room)) {
-                $this->dispatch('toast', ['type' => 'error', 'message' => 'Unauthorized action.']);
+                $this->dispatch('toast', ['type' => 'error', 'message' => 'Tindakan tidak sah.']);
                 return;
             }
 
             try {
                 $service->deleteRoom($room);
-                $this->dispatch('toast', ['type' => 'success', 'message' => 'Room deleted successfully.']);
+                $this->dispatch('toast', ['type' => 'success', 'message' => 'Kamar berhasil dihapus.']);
             } catch (\Exception $e) {
                 $this->dispatch('toast', ['type' => 'error', 'message' => $e->getMessage()]);
             }
@@ -155,7 +155,7 @@ class RoomList extends Component
     public function triggerBulkStatus(): void
     {
         if (empty($this->selectedIds)) {
-            $this->dispatch('toast', ['type' => 'warning', 'message' => 'Please select rooms first.']);
+            $this->dispatch('toast', ['type' => 'warning', 'message' => 'Silakan pilih kamar terlebih dahulu.']);
             return;
         }
         $this->showBulkStatusModal = true;
@@ -163,22 +163,41 @@ class RoomList extends Component
 
     public function applyBulkStatus(RoomService $service): void
     {
+        if (!Auth::user()->hasPermission('manage-rooms')) {
+            abort(403, 'Akses ditolak.');
+        }
+
         $updated = $service->bulkUpdateStatus($this->selectedIds, $this->bulkStatus);
         
         $this->showBulkStatusModal = false;
         $this->selectedIds = [];
         $this->selectAll = false;
 
+        $statusMap = [
+            'available' => 'Tersedia',
+            'occupied' => 'Terisi',
+            'reserved' => 'Dipesan',
+            'maintenance' => 'Pemeliharaan',
+            'cleaning' => 'Pembersihan',
+            'unavailable' => 'Tidak Tersedia',
+            'inactive' => 'Nonaktif',
+        ];
+        $statusText = $statusMap[$this->bulkStatus] ?? $this->bulkStatus;
+
         $this->dispatch('toast', [
             'type' => 'success',
-            'message' => "Successfully updated {$updated} rooms status to: {$this->bulkStatus}.",
+            'message' => "Berhasil memperbarui status {$updated} kamar menjadi: {$statusText}.",
         ]);
     }
 
     public function applyBulkDelete(RoomService $service): void
     {
+        if (!Auth::user()->hasPermission('manage-rooms')) {
+            abort(403, 'Akses ditolak.');
+        }
+
         if (empty($this->selectedIds)) {
-            $this->dispatch('toast', ['type' => 'warning', 'message' => 'Please select rooms first.']);
+            $this->dispatch('toast', ['type' => 'warning', 'message' => 'Silakan pilih kamar terlebih dahulu.']);
             return;
         }
 
@@ -189,14 +208,18 @@ class RoomList extends Component
 
         $this->dispatch('toast', [
             'type' => 'success',
-            'message' => "Successfully deleted {$deleted} rooms. Occupied rooms were bypassed.",
+            'message' => "Berhasil menghapus {$deleted} kamar. Kamar terisi dilewati.",
         ]);
     }
 
     public function exportSelected(RoomService $service)
     {
+        if (!Auth::user()->hasPermission('manage-rooms')) {
+            abort(403, 'Akses ditolak.');
+        }
+
         if (empty($this->selectedIds)) {
-            $this->dispatch('toast', ['type' => 'warning', 'message' => 'Please select rooms first.']);
+            $this->dispatch('toast', ['type' => 'warning', 'message' => 'Silakan pilih kamar terlebih dahulu.']);
             return;
         }
 
@@ -247,16 +270,26 @@ class RoomList extends Component
             })
             ->orderBy($this->sortBy, $this->sortDir);
 
-        // Stats calculation
-        $totalCount = Room::count();
-        $availableCount = Room::where('status', 'available')->count();
-        $occupiedCount = Room::where('status', 'occupied')->count();
-        $reservedCount = Room::where('status', 'reserved')->count();
-        $maintenanceCount = Room::where('status', 'maintenance')->count();
+        // Stats calculation via dynamic conditional aggregation
+        $stats = Room::selectRaw("
+            COUNT(*) as total,
+            SUM(CASE WHEN status = 'available' THEN 1 ELSE 0 END) as available,
+            SUM(CASE WHEN status = 'occupied' THEN 1 ELSE 0 END) as occupied,
+            SUM(CASE WHEN status = 'reserved' THEN 1 ELSE 0 END) as reserved,
+            SUM(CASE WHEN status = 'maintenance' THEN 1 ELSE 0 END) as maintenance,
+            SUM(monthly_rent) as potential_revenue,
+            SUM(CASE WHEN status = 'occupied' THEN monthly_rent ELSE 0 END) as current_revenue
+        ")->first();
+
+        $totalCount = $stats->total ?? 0;
+        $availableCount = $stats->available ?? 0;
+        $occupiedCount = $stats->occupied ?? 0;
+        $reservedCount = $stats->reserved ?? 0;
+        $maintenanceCount = $stats->maintenance ?? 0;
         
         $occupancyRate = $totalCount > 0 ? round(($occupiedCount / $totalCount) * 100, 1) : 0;
-        $monthlyRevenuePotential = Room::sum('monthly_rent');
-        $currentRevenue = Room::where('status', 'occupied')->sum('monthly_rent');
+        $monthlyRevenuePotential = (float) ($stats->potential_revenue ?? 0.00);
+        $currentRevenue = (float) ($stats->current_revenue ?? 0.00);
 
         // Dropdown filter items
         $boardingHouses = BoardingHouse::all();

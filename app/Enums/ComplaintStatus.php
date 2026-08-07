@@ -17,15 +17,15 @@ enum ComplaintStatus: string
     public function label(): string
     {
         return match ($this) {
-            self::OPEN => 'Open Complaint',
-            self::REVIEWED => 'Case Reviewed',
-            self::ASSIGNED => 'Technician Assigned',
-            self::IN_PROGRESS => 'Repair In Progress',
-            self::WAITING_PARTS => 'Waiting Parts',
-            self::COMPLETED => 'Work Completed',
-            self::VERIFIED => 'Verified Resolved',
-            self::CLOSED => 'Case Closed',
-            self::CANCELLED => 'Cancelled Case',
+            self::OPEN => 'Komplain Terbuka',
+            self::REVIEWED => 'Kasus Ditinjau',
+            self::ASSIGNED => 'Teknisi Ditugaskan',
+            self::IN_PROGRESS => 'Sedang Dikerjakan',
+            self::WAITING_PARTS => 'Menunggu Suku Cadang',
+            self::COMPLETED => 'Pekerjaan Selesai',
+            self::VERIFIED => 'Terverifikasi Selesai',
+            self::CLOSED => 'Kasus Ditutup',
+            self::CANCELLED => 'Laporan Dibatalkan',
         };
     }
 }

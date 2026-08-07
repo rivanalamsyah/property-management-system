@@ -80,6 +80,6 @@ class SaaSOnboardingTest extends TestCase
 
         $this->assertTrue($preview[0]['is_valid']);
         $this->assertFalse($preview[1]['is_valid']);
-        $this->assertStringContainsString("Duplicate room number in CSV", $preview[1]['errors'][0]);
+        $this->assertStringContainsString("Nomor kamar ganda dalam CSV", $preview[1]['errors'][0]);
     }
 }

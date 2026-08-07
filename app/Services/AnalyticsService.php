@@ -119,7 +119,7 @@ class AnalyticsService
         $year = $filters['year'] ?? date('Y');
 
         // Use DB-driver-aware month extraction for MySQL/SQLite compatibility
-        $driver = config('database.default');
+        $driver = DB::connection()->getDriverName();
         $monthExpr = $driver === 'sqlite'
             ? DB::raw('strftime("%m", payment_date) as month')
             : DB::raw('LPAD(MONTH(payment_date), 2, "0") as month');

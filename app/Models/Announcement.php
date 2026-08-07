@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
 
 class Announcement extends Model
 {
@@ -44,19 +45,28 @@ class Announcement extends Model
         'pinned_at' => 'datetime',
     ];
 
-    protected static function booted()
+    protected static function booted(): void
     {
-        static::creating(function ($announcement) {
+        static::creating(function (Announcement $announcement) {
             if (empty($announcement->announcement_number)) {
-                $year = date('Y');
-                // Calculate next increment offset under active workspace
-                $count = static::where('tenant_id', $announcement->tenant_id)
-                    ->whereYear('created_at', $year)
-                    ->count();
-                
-                $sequence = str_pad($count + 1, 6, '0', STR_PAD_LEFT);
-                $announcement->announcement_number = "ANN-{$year}-{$sequence}";
+                $announcement->announcement_number = static::generateNumber($announcement->tenant_id, 'ANN');
             }
+        });
+    }
+
+    /**
+     * Thread-safe announcement number generator using SELECT FOR UPDATE.
+     */
+    public static function generateNumber(string $tenantId, string $prefix): string
+    {
+        return DB::transaction(function () use ($tenantId, $prefix) {
+            $year = date('Y');
+            $count = static::where('tenant_id', $tenantId)
+                ->whereYear('created_at', $year)
+                ->lockForUpdate()
+                ->count();
+            $sequence = str_pad($count + 1, 6, '0', STR_PAD_LEFT);
+            return "{$prefix}-{$year}-{$sequence}";
         });
     }
 

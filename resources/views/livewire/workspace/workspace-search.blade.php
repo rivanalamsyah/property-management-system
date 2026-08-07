@@ -124,7 +124,7 @@
         <!-- Pagination -->
         @if($workspaces->hasPages())
             <div class="px-6 py-4 bg-slate-50 border-t border-slate-50">
-                {{ $workspaces->links() }}
+                {{ $workspaces->links('components.pagination') }}
             </div>
         @endif
     </div>

@@ -20,7 +20,7 @@ class TenantSettings extends Component
         if ($tenant) {
             $this->tenant_name = $tenant->name;
             $this->tenant_slug = $tenant->slug;
-            $this->status = $tenant->status;
+            $this->status = $tenant->status->value;
         }
 
         // Policy checks: only users with manage-settings permission can access

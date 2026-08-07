@@ -1,3 +1,16 @@
-@props(['disabled' => false])
+@props(['disabled' => false, 'icon' => null])
 
-<input {{ $disabled ? 'disabled' : '' }} {!! $attributes->merge(['class' => 'w-full rounded-xl border border-slate-200/90 bg-white py-2.5 px-3.5 text-xs sm:text-sm text-slate-900 placeholder-slate-400 shadow-2xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition duration-150 disabled:bg-slate-50 disabled:text-slate-400 disabled:cursor-not-allowed']) !!}>
+@if($icon)
+<div class="relative">
+    <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none text-slate-400">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            {!! $icon !!}
+        </svg>
+    </div>
+    <input {{ $disabled ? 'disabled' : '' }}
+           {!! $attributes->merge(['class' => 'input-base input-with-icon']) !!}>
+</div>
+@else
+<input {{ $disabled ? 'disabled' : '' }}
+       {!! $attributes->merge(['class' => 'input-base']) !!}>
+@endif

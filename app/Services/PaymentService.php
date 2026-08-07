@@ -99,6 +99,8 @@ class PaymentService
                 tenantId: $payment->tenant_id
             );
 
+            cache()->forget("billing_metrics:{$payment->tenant_id}");
+
             return $payment;
         });
     }
@@ -202,6 +204,8 @@ class PaymentService
                     tenantId: $payment->tenant_id
                 );
             }
+
+            cache()->forget("billing_metrics:{$payment->tenant_id}");
         });
     }
 

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
 
 class MaintenanceTask extends Model
 {
@@ -33,20 +34,46 @@ class MaintenanceTask extends Model
         'cost' => 'decimal:2',
     ];
 
-    protected static function booted()
+    protected static function booted(): void
     {
-        static::creating(function ($task) {
+        static::creating(function (MaintenanceTask $task) {
             if (empty($task->task_number)) {
-                $year = date('Y');
-                // Calculate next increment offset under active workspace
-                $count = static::where('tenant_id', $task->tenant_id)
-                    ->whereYear('created_at', $year)
-                    ->count();
-                
-                $sequence = str_pad($count + 1, 6, '0', STR_PAD_LEFT);
-                $task->task_number = "MNT-{$year}-{$sequence}";
+                $task->task_number = static::generateNumber($task->tenant_id, 'MNT');
             }
         });
+    }
+
+    /**
+     * Thread-safe task number generator using SELECT FOR UPDATE.
+     */
+    public static function generateNumber(string $tenantId, string $prefix): string
+    {
+        return DB::transaction(function () use ($tenantId, $prefix) {
+            $year = date('Y');
+            $count = static::where('tenant_id', $tenantId)
+                ->whereYear('created_at', $year)
+                ->lockForUpdate()
+                ->count();
+            $sequence = str_pad($count + 1, 6, '0', STR_PAD_LEFT);
+            return "{$prefix}-{$year}-{$sequence}";
+        });
+    }
+
+    // ─── Scopes ────────────────────────────────────────────────────────────────
+
+    public function scopePending($query)
+    {
+        return $query->whereNull('actual_completion_date');
+    }
+
+    public function scopeCompleted($query)
+    {
+        return $query->whereNotNull('actual_completion_date');
+    }
+
+    public function scopeAssignedToStaff($query, int $staffId)
+    {
+        return $query->where('assigned_staff_id', $staffId);
     }
 
     public function complaint(): BelongsTo

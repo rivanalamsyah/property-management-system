@@ -37,6 +37,10 @@ class CmsPageEditor extends Component
 
     public function mount(string $id): void
     {
+        if (!\Illuminate\Support\Facades\Auth::user()->hasRole('super_admin')) {
+            abort(403, 'Unauthorized. Super Admin access only.');
+        }
+
         $this->page = CmsPage::with('sections')->findOrFail($id);
         
         $this->name = $this->page->name;

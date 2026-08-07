@@ -10,6 +10,9 @@ class RolesAndPermissionsSeeder extends Seeder
 {
     public function run(): void
     {
+        // Clear cached permissions
+        app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+
         // 1. Create permissions
         $permissions = [
             'manage-settings' => ['label' => 'Manage Settings', 'desc' => 'Allows editing tenant preferences and settings'],
@@ -22,7 +25,10 @@ class RolesAndPermissionsSeeder extends Seeder
 
         $permissionModels = [];
         foreach ($permissions as $name => $data) {
-            $permissionModels[$name] = Permission::firstOrCreate(['name' => $name], [
+            $permissionModels[$name] = Permission::firstOrCreate([
+                'name' => $name,
+                'guard_name' => 'web'
+            ], [
                 'label' => $data['label'],
                 'description' => $data['desc'],
             ]);
@@ -30,28 +36,31 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // 2. Create roles and assign permissions
         
+        // Super Admin role
+        $superAdmin = Role::firstOrCreate([
+            'name' => 'super_admin',
+            'guard_name' => 'web'
+        ], [
+            'label' => 'Super Admin',
+            'description' => 'Platform Super Admin. Has full control over the SaaS platform, monitoring, and configurations.',
+        ]);
+        $superAdmin->permissions()->sync(array_values(array_map(fn($p) => $p->id, $permissionModels)));
+
         // Owner role (all permissions)
-        $owner = Role::firstOrCreate(['name' => 'owner'], [
+        $owner = Role::firstOrCreate([
+            'name' => 'owner',
+            'guard_name' => 'web'
+        ], [
             'label' => 'Boarding House Owner',
-            'description' => 'Owner of this boarding house. Has full control.',
+            'description' => 'Owner of this boarding house. Has full control over the business data.',
         ]);
         $owner->permissions()->sync(array_values(array_map(fn($p) => $p->id, $permissionModels)));
 
-        // Manager role (almost all permissions)
-        $manager = Role::firstOrCreate(['name' => 'manager'], [
-            'label' => 'Manager',
-            'description' => 'Manages rooms, payments, and complaints.',
-        ]);
-        $manager->permissions()->sync([
-            $permissionModels['view-dashboard']->id,
-            $permissionModels['manage-rooms']->id,
-            $permissionModels['manage-payments']->id,
-            $permissionModels['manage-complaints']->id,
-            $permissionModels['manage-users']->id,
-        ]);
-
         // Staff role
-        $staff = Role::firstOrCreate(['name' => 'staff'], [
+        $staff = Role::firstOrCreate([
+            'name' => 'staff',
+            'guard_name' => 'web'
+        ], [
             'label' => 'Operational Staff',
             'description' => 'Handles day-to-day check-ins and payments.',
         ]);
@@ -63,7 +72,10 @@ class RolesAndPermissionsSeeder extends Seeder
         ]);
 
         // Tenant (resident) role
-        $tenant = Role::firstOrCreate(['name' => 'tenant'], [
+        $tenant = Role::firstOrCreate([
+            'name' => 'tenant',
+            'guard_name' => 'web'
+        ], [
             'label' => 'Resident (Tenant)',
             'description' => 'Resident of a room. Can view their own bills and raise complaints.',
         ]);

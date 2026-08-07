@@ -17,18 +17,18 @@ class ImportService
     public function parseCsv(string $filePath, array $requiredHeaders): array
     {
         if (!file_exists($filePath) || !is_readable($filePath)) {
-            throw new Exception("CSV file could not be read.");
+            throw new Exception("File CSV tidak dapat dibaca.");
         }
 
         $handle = fopen($filePath, 'r');
         if (!$handle) {
-            throw new Exception("Failed to open CSV file.");
+            throw new Exception("Gagal membuka file CSV.");
         }
 
         $header = fgetcsv($handle, 1000, ',');
         if (!$header) {
             fclose($handle);
-            throw new Exception("CSV is empty or missing headers.");
+            throw new Exception("File CSV kosong atau tidak memiliki header.");
         }
 
         // Clean headers (remove BOM/spaces/lowercase)
@@ -38,7 +38,7 @@ class ImportService
         foreach ($requiredHeaders as $req) {
             if (!in_array($req, $header)) {
                 fclose($handle);
-                throw new Exception("Missing required header: " . $req);
+                throw new Exception("Header wajib tidak ditemukan: " . $req);
             }
         }
 
@@ -77,25 +77,28 @@ class ImportService
             $rent = (float)($row['monthly_rent'] ?? 0.00);
             $deposit = (float)($row['security_deposit'] ?? 0.00);
             $size = trim($row['room_size'] ?? '3x4');
-            $status = trim($row['status'] ?? 'vacant');
+            $status = trim($row['status'] ?? 'available');
+            if ($status === 'vacant') {
+                $status = 'available';
+            }
             
             $roomCode = 'RM-' . strtoupper($roomNumber);
 
             // Validation Rules
             if (empty($roomNumber)) {
-                $errors[] = "Room number is required.";
+                $errors[] = "Nomor kamar wajib diisi.";
             }
 
             if ($rent <= 0) {
-                $errors[] = "Rent price must be greater than 0.";
+                $errors[] = "Harga sewa bulanan harus lebih besar dari 0.";
             }
 
             // Duplicate checks
             if (in_array($roomNumber, $existingRoomNumbers)) {
-                $errors[] = "Room '{$roomNumber}' already exists in this boarding house.";
+                $errors[] = "Kamar '{$roomNumber}' sudah terdaftar di properti kos ini.";
             }
             if (in_array($roomNumber, $seenNumbers)) {
-                $errors[] = "Duplicate room number in CSV: '{$roomNumber}'.";
+                $errors[] = "Nomor kamar ganda dalam CSV: '{$roomNumber}'.";
             }
             $seenNumbers[] = $roomNumber;
 
@@ -145,29 +148,29 @@ class ImportService
             $occupation = trim($row['occupation'] ?? '');
 
             if (empty($name)) {
-                $errors[] = "Name is required.";
+                $errors[] = "Nama wajib diisi.";
             }
             if (empty($nik) || strlen($nik) !== 16 || !is_numeric($nik)) {
-                $errors[] = "NIK must be exactly 16 numeric digits.";
+                $errors[] = "NIK harus terdiri dari 16 digit angka.";
             }
             if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $errors[] = "Valid email is required.";
+                $errors[] = "Alamat email tidak valid.";
             }
 
             // Duplicate checks
             if (in_array($nik, $existingNiks)) {
-                $errors[] = "Resident with NIK '{$nik}' is already registered.";
+                $errors[] = "Penghuni dengan NIK '{$nik}' sudah terdaftar.";
             }
             if (in_array($nik, $seenNiks)) {
-                $errors[] = "Duplicate NIK in CSV: '{$nik}'.";
+                $errors[] = "NIK ganda dalam CSV: '{$nik}'.";
             }
             $seenNiks[] = $nik;
 
             if (in_array($email, $existingEmails)) {
-                $errors[] = "Email '{$email}' is already taken.";
+                $errors[] = "Email '{$email}' sudah digunakan.";
             }
             if (in_array($email, $seenEmails)) {
-                $errors[] = "Duplicate Email in CSV: '{$email}'.";
+                $errors[] = "Email ganda dalam CSV: '{$email}'.";
             }
             $seenEmails[] = $email;
 
@@ -201,7 +204,7 @@ class ImportService
         try {
             foreach ($preview as $item) {
                 if (!$item['is_valid']) {
-                    throw new Exception("Cannot import. CSV contains validation errors.");
+                    throw new Exception("Tidak dapat mengimpor. File CSV mengandung kesalahan validasi.");
                 }
                 Room::create($item['data']);
             }
@@ -221,7 +224,7 @@ class ImportService
         try {
             foreach ($preview as $item) {
                 if (!$item['is_valid']) {
-                    throw new Exception("Cannot import. CSV contains validation errors.");
+                    throw new Exception("Tidak dapat mengimpor. File CSV mengandung kesalahan validasi.");
                 }
                 Resident::create($item['data']);
             }

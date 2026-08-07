@@ -16,6 +16,13 @@ class CmsBlogList extends Component
     public string $status = '';
     public string $category = '';
 
+    public function mount(): void
+    {
+        if (!\Illuminate\Support\Facades\Auth::user()->hasRole('super_admin')) {
+            abort(403, 'Unauthorized. Super Admin access only.');
+        }
+    }
+
     protected $queryString = [
         'search' => ['except' => ''],
         'status' => ['except' => ''],

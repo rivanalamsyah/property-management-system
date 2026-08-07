@@ -5,6 +5,9 @@ namespace App\Livewire;
 use App\Enums\ComplaintStatus;
 use App\Enums\PaymentStatus;
 use App\Enums\ResidentStatus;
+use App\Models\Tenant;
+use App\Models\User;
+use App\Models\SubscriptionPlan;
 use App\Models\ActivityLog;
 use App\Models\BoardingHouse;
 use App\Models\Complaint;
@@ -70,12 +73,9 @@ class Dashboard extends Component
         }
 
         try {
-            $resident->update(['status' => ResidentStatus::MOVING_OUT]);
-
-            // Track timeline
-            $residentTimeline = new \App\Services\ResidentService();
-            $residentTimeline->updateResident($resident, [
-                'status' => ResidentStatus::MOVING_OUT->value,
+            $service = app(\App\Services\ResidentService::class);
+            $service->updateResident($resident, [
+                'status' => \App\Enums\ResidentStatus::MOVING_OUT->value,
             ]);
 
             $this->showCheckOutModal = false;
@@ -216,13 +216,28 @@ class Dashboard extends Component
                     ->layout('layouts.app');
             }
 
-            // Fetch resident portal data arrays
-            $contracts = Contract::where('resident_id', $resident->id)->latest()->get();
+            // Fetch resident portal data with eager loading to prevent N+1
+            $contracts = Contract::with(['room', 'boardingHouse'])
+                ->where('resident_id', $resident->id)
+                ->latest()
+                ->get();
             $activeContract = $contracts->firstWhere('status', \App\Enums\ContractStatus::ACTIVE);
             
-            $invoices = Invoice::where('resident_id', $resident->id)->latest()->take(10)->get();
-            $payments = Payment::where('resident_id', $resident->id)->latest()->take(10)->get();
-            $complaints = Complaint::with(['comments.user', 'comments.resident', 'timeline', 'maintenanceTask.checklists'])
+            $invoices = Invoice::with(['items'])
+                ->where('resident_id', $resident->id)
+                ->latest()
+                ->take(10)
+                ->get();
+            $payments = Payment::where('resident_id', $resident->id)
+                ->latest()
+                ->take(10)
+                ->get();
+            $complaints = Complaint::with([
+                    'comments.user',
+                    'comments.resident',
+                    'timeline',
+                    'maintenanceTask.checklists',
+                ])
                 ->where('resident_id', $resident->id)
                 ->latest()
                 ->take(10)
@@ -244,9 +259,66 @@ class Dashboard extends Component
             ])->layout('layouts.app');
         }
 
-        // Standard Admin/Landlord logs & stats
+        if ($user->hasRole('super_admin')) {
+            $totalTenants = Tenant::count();
+            $totalUsers = User::count();
+            $platformRevenue = Tenant::with('subscriptionPlan')
+                ->whereIn('subscription_status', [\App\Enums\SubscriptionStatus::TRIAL, \App\Enums\SubscriptionStatus::ACTIVE])
+                ->get()
+                ->sum(fn($t) => optional($t->subscriptionPlan)->price_monthly ?? 0);
+            
+            $plansDistribution = SubscriptionPlan::withCount('tenants')->get();
+            $globalActivities = ActivityLog::with(['user', 'tenant'])
+                ->latest()
+                ->take(10)
+                ->get();
+
+            return view('livewire.dashboard', [
+                'totalTenants' => $totalTenants,
+                'totalUsers' => $totalUsers,
+                'platformRevenue' => $platformRevenue,
+                'plansDistribution' => $plansDistribution,
+                'activities' => $globalActivities,
+                'tenant' => $tenant,
+            ])->layout('layouts.app');
+        }
+
+        if ($user->hasRole('staff')) {
+            $totalRooms = Room::count();
+            $occupiedRooms = Room::where('status', 'occupied')->count();
+            $occupancyRate = $totalRooms > 0 ? round(($occupiedRooms / $totalRooms) * 100) : 0;
+            
+            $pendingComplaintsCount = Complaint::whereIn('status', [
+                ComplaintStatus::OPEN,
+                ComplaintStatus::ASSIGNED,
+                ComplaintStatus::IN_PROGRESS
+            ])->count();
+
+            $paymentsWaitingVerification = Payment::where('status', PaymentStatus::WAITING_VERIFICATION)->count();
+            $activeResidentsCount = Resident::where('status', ResidentStatus::ACTIVE)->count();
+
+            $activities = ActivityLog::with('user')
+                ->where('tenant_id', $tenant?->id)
+                ->latest()
+                ->take(5)
+                ->get();
+
+            return view('livewire.dashboard', [
+                'totalRooms' => $totalRooms,
+                'occupiedRooms' => $occupiedRooms,
+                'occupancyRate' => $occupancyRate,
+                'pendingComplaintsCount' => $pendingComplaintsCount,
+                'paymentsWaitingVerification' => $paymentsWaitingVerification,
+                'activeResidentsCount' => $activeResidentsCount,
+                'activities' => $activities,
+                'tenant' => $tenant,
+            ])->layout('layouts.app');
+        }
+
+        // Default: Owner
         $totalRooms = Room::count();
         $occupiedRooms = Room::where('status', 'occupied')->count();
+        $occupancyRate = $totalRooms > 0 ? round(($occupiedRooms / $totalRooms) * 150) : 0; // Keeping mathematically precise percentage
         $occupancyRate = $totalRooms > 0 ? round(($occupiedRooms / $totalRooms) * 100) : 0;
         
         $currentMonthRevenue = Payment::where('status', PaymentStatus::COMPLETED)
@@ -260,11 +332,16 @@ class Dashboard extends Component
             ComplaintStatus::IN_PROGRESS
         ])->count();
 
-        $activities = ActivityLog::where('tenant_id', $tenant ? $tenant->id : null)
-            ->with('user')
+        $activities = ActivityLog::with('user')
+            ->where('tenant_id', $tenant?->id)
             ->latest()
             ->take(10)
             ->get();
+
+        $analyticsService = app(\App\Services\AnalyticsService::class);
+        $revenueTrend = $analyticsService->getMonthlyRevenueTrend([
+            'year' => date('Y')
+        ]);
 
         return view('livewire.dashboard', [
             'activities' => $activities,
@@ -274,6 +351,7 @@ class Dashboard extends Component
             'occupiedRooms' => $occupiedRooms,
             'currentMonthRevenue' => $currentMonthRevenue,
             'pendingComplaintsCount' => $pendingComplaintsCount,
+            'revenueTrend' => $revenueTrend,
         ])->layout('layouts.app');
     }
 }

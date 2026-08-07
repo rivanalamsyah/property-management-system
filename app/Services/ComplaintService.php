@@ -186,7 +186,7 @@ class ComplaintService
                 complaint: $complaint,
                 event: 'progress_updated',
                 title: 'New commentary added',
-                description: strLimit($data['comment'], 80),
+                description: \Illuminate\Support\Str::limit($data['comment'], 80),
                 icon: 'comment',
                 color: 'bg-slate-400'
             );
@@ -210,15 +210,5 @@ class ComplaintService
             'icon' => $icon ?? 'check',
             'color' => $color ?? 'bg-indigo-500',
         ]);
-    }
-}
-
-if (!function_exists('strLimit')) {
-    function strLimit(string $value, int $limit = 100, string $end = '...'): string
-    {
-        if (mb_strwidth($value, 'UTF-8') <= $limit) {
-            return $value;
-        }
-        return rtrim(mb_strimwidth($value, 0, $limit, '', 'UTF-8')) . $end;
     }
 }

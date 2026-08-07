@@ -86,7 +86,7 @@ class ResidentShow extends Component
 
         try {
             $service->checkIn($resident, $checkInData);
-            $this->dispatch('toast', ['type' => 'success', 'message' => 'Check-in completed successfully! Room is now marked occupied.']);
+            $this->dispatch('toast', ['type' => 'success', 'message' => 'Proses check-in berhasil diselesaikan! Status kamar kini menjadi terisi.']);
         } catch (\Exception $e) {
             $this->dispatch('toast', ['type' => 'error', 'message' => $e->getMessage()]);
         }
@@ -105,7 +105,7 @@ class ResidentShow extends Component
 
         // Ensure final meter is larger than initial meter
         if ($resident->initial_meter_reading && $this->final_meter_reading && $this->final_meter_reading < $resident->initial_meter_reading) {
-            $this->addError('final_meter_reading', 'Final meter reading cannot be lower than initial meter reading (' . $resident->initial_meter_reading . ' kWh).');
+            $this->addError('final_meter_reading', 'Angka meteran akhir tidak boleh lebih rendah dari meteran awal (' . $resident->initial_meter_reading . ' kWh).');
             return;
         }
 
@@ -118,7 +118,7 @@ class ResidentShow extends Component
 
         try {
             $service->checkOut($resident, $checkOutData);
-            $this->dispatch('toast', ['type' => 'success', 'message' => 'Check-out completed! Room is back to available.']);
+            $this->dispatch('toast', ['type' => 'success', 'message' => 'Proses check-out berhasil diselesaikan! Status kamar kembali menjadi tersedia.']);
         } catch (\Exception $e) {
             $this->dispatch('toast', ['type' => 'error', 'message' => $e->getMessage()]);
         }
@@ -138,14 +138,14 @@ class ResidentShow extends Component
         $service->addDocument($resident, $this->docType, $path, $this->docLabel);
 
         $this->reset(['docUpload', 'docLabel']);
-        $this->dispatch('toast', ['type' => 'success', 'message' => 'Document attached to resident profile.']);
+        $this->dispatch('toast', ['type' => 'success', 'message' => 'Dokumen berhasil dilampirkan ke profil penghuni.']);
     }
 
     public function deleteDocument(int $id, ResidentService $service): void
     {
         $doc = ResidentDocument::findOrFail($id);
         $service->removeDocument($doc);
-        $this->dispatch('toast', ['type' => 'success', 'message' => 'Document deleted.']);
+        $this->dispatch('toast', ['type' => 'success', 'message' => 'Dokumen berhasil dihapus.']);
     }
 
     public function render()

@@ -108,32 +108,49 @@ class ResidentList extends Component
                 $q->where('status', $this->filterStatus);
             });
 
-        // Analytics
-        $totalCount = Resident::count();
-        $activeCount = Resident::where('status', 'active')->count();
-        $formerCount = Resident::where('status', 'former')->count();
-        $reservedCount = Resident::where('status', 'reserved')->count();
-        $movingOutCount = Resident::where('status', 'moving_out')->count();
-        $latePaymentCount = Resident::where('status', 'late_payment')->count();
+        // Analytics via single aggregate query
+        $residentStats = Resident::selectRaw("
+            COUNT(*) as total,
+            SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as active,
+            SUM(CASE WHEN status = 'former' THEN 1 ELSE 0 END) as former,
+            SUM(CASE WHEN status = 'reserved' THEN 1 ELSE 0 END) as reserved,
+            SUM(CASE WHEN status = 'moving_out' THEN 1 ELSE 0 END) as moving_out,
+            SUM(CASE WHEN status = 'late_payment' THEN 1 ELSE 0 END) as late_payment
+        ")->first();
 
-        // Room Occupancy calculations
-        $totalRooms = Room::count();
-        $occupiedRooms = Room::where('status', 'occupied')->count();
+        $totalCount = $residentStats->total ?? 0;
+        $activeCount = $residentStats->active ?? 0;
+        $formerCount = $residentStats->former ?? 0;
+        $reservedCount = $residentStats->reserved ?? 0;
+        $movingOutCount = $residentStats->moving_out ?? 0;
+        $latePaymentCount = $residentStats->late_payment ?? 0;
+
+        // Room Occupancy calculations via single query
+        $roomStats = Room::selectRaw("
+            COUNT(*) as total,
+            SUM(CASE WHEN status = 'occupied' THEN 1 ELSE 0 END) as occupied
+        ")->first();
+
+        $totalRooms = $roomStats->total ?? 0;
+        $occupiedRooms = $roomStats->occupied ?? 0;
         $occupancyRate = $totalRooms > 0 ? round(($occupiedRooms / $totalRooms) * 100, 1) : 0;
 
-        // Average Stay Duration calculations (Former Tenants)
-        $formerResidents = Resident::where('status', 'former')
-            ->whereNotNull('check_in_date')
-            ->whereNotNull('check_out_date')
-            ->get();
-
-        $avgStay = 0;
-        if ($formerResidents->count() > 0) {
-            $totalDays = $formerResidents->sum(function($r) {
-                return $r->check_in_date->diffInDays($r->check_out_date);
-            });
-            $avgStay = round($totalDays / $formerResidents->count()); // Average stay in days
+        // Average Stay Duration calculations (Former Tenants) - database level aggregation
+        $driver = \Illuminate\Support\Facades\DB::connection()->getDriverName();
+        if ($driver === 'sqlite') {
+            $avgStay = Resident::where('status', 'former')
+                ->whereNotNull('check_in_date')
+                ->whereNotNull('check_out_date')
+                ->selectRaw('AVG(julianday(check_out_date) - julianday(check_in_date)) as avg_stay')
+                ->value('avg_stay');
+        } else {
+            $avgStay = Resident::where('status', 'former')
+                ->whereNotNull('check_in_date')
+                ->whereNotNull('check_out_date')
+                ->selectRaw('AVG(DATEDIFF(check_out_date, check_in_date)) as avg_stay')
+                ->value('avg_stay');
         }
+        $avgStay = $avgStay ? (int) round($avgStay) : 0;
 
         $boardingHouses = BoardingHouse::all();
 

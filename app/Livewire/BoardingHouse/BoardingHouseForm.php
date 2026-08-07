@@ -200,6 +200,9 @@ class BoardingHouseForm extends Component
             $service->updateBoardingHouse($boardingHouse, $data);
             $this->dispatch('toast', ['type' => 'success', 'message' => 'Profile details updated!']);
         } else {
+            if (Auth::user()->cannot('create', BoardingHouse::class)) {
+                abort(403, 'Unauthorized.');
+            }
             $boardingHouse = $service->createBoardingHouse($data);
             $this->boardingHouseId = $boardingHouse->id;
             
@@ -212,6 +215,11 @@ class BoardingHouseForm extends Component
 
     public function saveSettings(BoardingHouseService $service): void
     {
+        $boardingHouse = BoardingHouse::findOrFail($this->boardingHouseId);
+        if (Auth::user()->cannot('update', $boardingHouse)) {
+            abort(403, 'Unauthorized.');
+        }
+
         $this->validate([
             'check_in_time' => ['required', 'string'],
             'check_out_time' => ['required', 'string'],
@@ -242,7 +250,6 @@ class BoardingHouseForm extends Component
             'cancellation_policy' => $this->cancellation_policy,
         ];
 
-        $boardingHouse = BoardingHouse::findOrFail($this->boardingHouseId);
         $service->updateSettings($boardingHouse, $settings);
 
         $this->dispatch('toast', ['type' => 'success', 'message' => 'Operational configurations updated successfully.']);
@@ -251,6 +258,9 @@ class BoardingHouseForm extends Component
     public function saveFacilities(BoardingHouseService $service): void
     {
         $boardingHouse = BoardingHouse::findOrFail($this->boardingHouseId);
+        if (Auth::user()->cannot('update', $boardingHouse)) {
+            abort(403, 'Unauthorized.');
+        }
         
         $syncData = [];
         foreach ($this->selectedFacilities as $facilityId) {
@@ -289,6 +299,11 @@ class BoardingHouseForm extends Component
 
     public function saveRule(BoardingHouseService $service): void
     {
+        $boardingHouse = BoardingHouse::findOrFail($this->boardingHouseId);
+        if (Auth::user()->cannot('update', $boardingHouse)) {
+            abort(403, 'Unauthorized.');
+        }
+
         $this->validate([
             'ruleTitle' => ['required', 'string', 'max:255'],
             'ruleCategory' => ['required', 'string'],
@@ -297,8 +312,6 @@ class BoardingHouseForm extends Component
             'ruleIsActive' => ['boolean'],
             'ruleIsVisiblePublic' => ['boolean'],
         ]);
-
-        $boardingHouse = BoardingHouse::findOrFail($this->boardingHouseId);
 
         $data = [
             'category' => $this->ruleCategory,
@@ -324,6 +337,11 @@ class BoardingHouseForm extends Component
 
     public function deleteRule(int $id, BoardingHouseService $service): void
     {
+        $boardingHouse = BoardingHouse::findOrFail($this->boardingHouseId);
+        if (Auth::user()->cannot('update', $boardingHouse)) {
+            abort(403, 'Unauthorized.');
+        }
+
         $rule = BoardingHouseRule::findOrFail($id);
         $service->removeRule($rule);
         $this->dispatch('toast', ['type' => 'success', 'message' => 'Rule removed.']);
@@ -331,6 +349,11 @@ class BoardingHouseForm extends Component
 
     public function moveRuleUp(int $id, BoardingHouseService $service): void
     {
+        $boardingHouse = BoardingHouse::findOrFail($this->boardingHouseId);
+        if (Auth::user()->cannot('update', $boardingHouse)) {
+            abort(403, 'Unauthorized.');
+        }
+
         $rule = BoardingHouseRule::findOrFail($id);
         $previous = BoardingHouseRule::where('boarding_house_id', $this->boardingHouseId)
             ->where('display_order', '<', $rule->display_order)
@@ -346,6 +369,11 @@ class BoardingHouseForm extends Component
 
     public function moveRuleDown(int $id, BoardingHouseService $service): void
     {
+        $boardingHouse = BoardingHouse::findOrFail($this->boardingHouseId);
+        if (Auth::user()->cannot('update', $boardingHouse)) {
+            abort(403, 'Unauthorized.');
+        }
+
         $rule = BoardingHouseRule::findOrFail($id);
         $next = BoardingHouseRule::where('boarding_house_id', $this->boardingHouseId)
             ->where('display_order', '>', $rule->display_order)
@@ -362,12 +390,16 @@ class BoardingHouseForm extends Component
     // Gallery handlers
     public function uploadGalleryImage(BoardingHouseService $service): void
     {
+        $boardingHouse = BoardingHouse::findOrFail($this->boardingHouseId);
+        if (Auth::user()->cannot('update', $boardingHouse)) {
+            abort(403, 'Unauthorized.');
+        }
+
         $this->validate([
             'galleryUpload' => ['required', 'image', 'max:2048'], // 2MB
             'galleryLabel' => ['nullable', 'string', 'max:100'],
         ]);
 
-        $boardingHouse = BoardingHouse::findOrFail($this->boardingHouseId);
         $path = $this->galleryUpload->store('galleries', 'public');
         
         $isFirst = $boardingHouse->galleries()->count() === 0;
@@ -380,6 +412,11 @@ class BoardingHouseForm extends Component
 
     public function setAsCover(int $id, BoardingHouseService $service): void
     {
+        $boardingHouse = BoardingHouse::findOrFail($this->boardingHouseId);
+        if (Auth::user()->cannot('update', $boardingHouse)) {
+            abort(403, 'Unauthorized.');
+        }
+
         $gallery = BoardingHouseGallery::findOrFail($id);
         $service->setCoverImage($gallery);
         $this->dispatch('toast', ['type' => 'success', 'message' => 'Set as cover image successfully.']);
@@ -387,6 +424,11 @@ class BoardingHouseForm extends Component
 
     public function deleteGalleryImage(int $id, BoardingHouseService $service): void
     {
+        $boardingHouse = BoardingHouse::findOrFail($this->boardingHouseId);
+        if (Auth::user()->cannot('update', $boardingHouse)) {
+            abort(403, 'Unauthorized.');
+        }
+
         $gallery = BoardingHouseGallery::findOrFail($id);
         $service->removeGalleryImage($gallery);
         $this->dispatch('toast', ['type' => 'success', 'message' => 'Gallery image deleted.']);
@@ -394,6 +436,11 @@ class BoardingHouseForm extends Component
 
     public function moveGalleryUp(int $id, BoardingHouseService $service): void
     {
+        $boardingHouse = BoardingHouse::findOrFail($this->boardingHouseId);
+        if (Auth::user()->cannot('update', $boardingHouse)) {
+            abort(403, 'Unauthorized.');
+        }
+
         $gallery = BoardingHouseGallery::findOrFail($id);
         $previous = BoardingHouseGallery::where('boarding_house_id', $this->boardingHouseId)
             ->where('display_order', '<', $gallery->display_order)
@@ -409,6 +456,11 @@ class BoardingHouseForm extends Component
 
     public function moveGalleryDown(int $id, BoardingHouseService $service): void
     {
+        $boardingHouse = BoardingHouse::findOrFail($this->boardingHouseId);
+        if (Auth::user()->cannot('update', $boardingHouse)) {
+            abort(403, 'Unauthorized.');
+        }
+
         $gallery = BoardingHouseGallery::findOrFail($id);
         $next = BoardingHouseGallery::where('boarding_house_id', $this->boardingHouseId)
             ->where('display_order', '>', $gallery->display_order)

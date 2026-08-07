@@ -12,6 +12,7 @@ trait HasTenantsAndPermissions
     public function tenants(): BelongsToMany
     {
         return $this->belongsToMany(Tenant::class, 'tenant_user')
+            ->using(\App\Models\TenantUser::class)
             ->withPivot('role_id', 'is_active', 'joined_at')
             ->withTimestamps();
     }
@@ -30,32 +31,13 @@ trait HasTenantsAndPermissions
             return $this->memoizedTenantRoles[$tenant->id];
         }
 
-        // Cache or load the relation
-        $pivot = $this->tenants()
-            ->where('tenant_id', $tenant->id)
-            ->where('is_active', true)
-            ->first();
-
-        if (!$pivot) {
-            return $this->memoizedTenantRoles[$tenant->id] = null;
+        setPermissionsTeamId($tenant->id);
+        $spatieRole = $this->roles()->first();
+        
+        if ($spatieRole) {
+            return $this->memoizedTenantRoles[$tenant->id] = Role::find($spatieRole->id);
         }
 
-        return $this->memoizedTenantRoles[$tenant->id] = Role::find($pivot->pivot->role_id);
-    }
-
-    public function hasRole(string $roleName, Tenant $tenant = null): bool
-    {
-        $role = $this->tenantRole($tenant);
-        return $role ? $role->name === $roleName : false;
-    }
-
-    public function hasPermission(string $permissionName, Tenant $tenant = null): bool
-    {
-        $role = $this->tenantRole($tenant);
-        if (!$role) {
-            return false;
-        }
-
-        return $role->permissions()->where('name', $permissionName)->exists();
+        return $this->memoizedTenantRoles[$tenant->id] = null;
     }
 }

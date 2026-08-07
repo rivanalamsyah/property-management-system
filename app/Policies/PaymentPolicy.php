@@ -12,7 +12,7 @@ class PaymentPolicy
 
     public function viewAny(User $user): bool
     {
-        return tenant() !== null;
+        return tenant() !== null && $user->hasPermission('manage-payments');
     }
 
     public function view(User $user, Payment $payment): bool

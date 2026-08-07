@@ -25,6 +25,10 @@ class CmsGlobalEditor extends Component
 
     public function mount(): void
     {
+        if (!\Illuminate\Support\Facades\Auth::user()->hasRole('super_admin')) {
+            abort(403, 'Unauthorized. Super Admin access only.');
+        }
+
         $keys = [
             'company_profile',
             'address',

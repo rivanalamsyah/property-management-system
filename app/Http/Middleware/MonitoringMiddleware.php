@@ -53,6 +53,7 @@ class MonitoringMiddleware
             '/vite',
             '/images/',
             '/favicon.ico',
+            '/favicon.png',
         ];
 
         foreach ($excludes as $ex) {

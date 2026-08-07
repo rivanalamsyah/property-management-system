@@ -25,7 +25,7 @@ class SecurityCenter extends Component
 
     public function mount(): void
     {
-        if (!Auth::user()->hasRole('owner')) {
+        if (!Auth::user()->hasRole('super_admin')) {
             abort(403, 'Unauthorized. Super Admin access only.');
         }
     }
@@ -37,9 +37,9 @@ class SecurityCenter extends Component
     {
         try {
             DB::table('sessions')->where('id', $sessionId)->delete();
-            $this->dispatch('toast', ['type' => 'warning', 'message' => 'User session terminated.']);
+            $this->dispatch('toast', ['type' => 'warning', 'message' => 'Sesi pengguna telah diakhiri.']);
         } catch (\Exception $e) {
-            $this->dispatch('toast', ['type' => 'error', 'message' => 'Failed to terminate session: ' . $e->getMessage()]);
+            $this->dispatch('toast', ['type' => 'error', 'message' => 'Gagal mengakhiri sesi: ' . $e->getMessage()]);
         }
     }
 
@@ -51,9 +51,9 @@ class SecurityCenter extends Component
         try {
             $currentSessionId = session()->getId();
             DB::table('sessions')->where('id', '!=', $currentSessionId)->delete();
-            $this->dispatch('toast', ['type' => 'warning', 'message' => 'All other user sessions terminated.']);
+            $this->dispatch('toast', ['type' => 'warning', 'message' => 'Semua sesi pengguna lainnya telah diakhiri.']);
         } catch (\Exception $e) {
-            $this->dispatch('toast', ['type' => 'error', 'message' => 'Failed to terminate sessions.']);
+            $this->dispatch('toast', ['type' => 'error', 'message' => 'Gagal mengakhiri sesi.']);
         }
     }
 
@@ -79,9 +79,9 @@ class SecurityCenter extends Component
 
             $this->newIp = '';
             $this->ipReason = '';
-            $this->dispatch('toast', ['type' => 'success', 'message' => 'Firewall IP rule added successfully.']);
+            $this->dispatch('toast', ['type' => 'success', 'message' => 'Aturan IP Firewall berhasil ditambahkan.']);
         } catch (\Exception $e) {
-            $this->dispatch('toast', ['type' => 'error', 'message' => 'Failed to add rule (duplicate IP).']);
+            $this->dispatch('toast', ['type' => 'error', 'message' => 'Gagal menambahkan aturan (IP duplikat).']);
         }
     }
 
@@ -91,7 +91,7 @@ class SecurityCenter extends Component
     public function deleteIpRule(string $id): void
     {
         DB::table('security_ip_rules')->where('id', $id)->delete();
-        $this->dispatch('toast', ['type' => 'warning', 'message' => 'Firewall rule removed.']);
+        $this->dispatch('toast', ['type' => 'warning', 'message' => 'Aturan Firewall berhasil dihapus.']);
     }
 
     /**
@@ -112,7 +112,7 @@ class SecurityCenter extends Component
             ]);
 
         $this->resolutionNote = '';
-        $this->dispatch('toast', ['type' => 'success', 'message' => 'Incident alert marked as resolved.']);
+        $this->dispatch('toast', ['type' => 'success', 'message' => 'Laporan insiden keamanan telah ditandai sebagai selesai.']);
     }
 
     public function render()

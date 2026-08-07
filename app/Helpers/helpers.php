@@ -68,3 +68,10 @@ if (!function_exists('activity_log')) {
         ]);
     }
 }
+
+if (!function_exists('setPermissionsTeamId')) {
+    function setPermissionsTeamId(mixed $tenantId): void
+    {
+        app(\Spatie\Permission\PermissionRegistrar::class)->setPermissionsTeamId($tenantId);
+    }
+}

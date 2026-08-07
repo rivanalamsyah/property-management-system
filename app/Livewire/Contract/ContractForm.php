@@ -179,6 +179,9 @@ class ContractForm extends Component
                 $service->updateContract($contract, $data);
                 $this->dispatch('toast', ['type' => 'success', 'message' => 'Lease contract specifications modified.']);
             } else {
+                if (Auth::user()->cannot('create', Contract::class)) {
+                    abort(403, 'Unauthorized.');
+                }
                 $contract = $service->createContract($data);
                 $this->dispatch('toast', ['type' => 'success', 'message' => 'Lease agreement draft created! Proceed to generate signed files.']);
             }

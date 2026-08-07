@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="theme-color" content="#4f46e5">
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
 
     <title>{{ $meta_title ?? 'Kosan - Otomatisasi Penagihan & Pengelolaan Kos Smart' }}</title>
     <meta name="description" content="{{ $meta_description ?? 'Kelola bisnis kos lebih mudah dan efisien. Otomatisasi tagihan sewa, verifikasi pembayaran otomatis, kelola penghuni, dan sediakan portal digital penghuni (PWA).' }}">
@@ -81,12 +82,7 @@
             <div class="relative bg-white/75 backdrop-blur-xl rounded-[15px] px-6 h-16 flex items-center justify-between">
                 <!-- Brand Logo -->
                 <a href="{{ route('home') }}" class="flex items-center gap-2 group transition duration-200">
-                    <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-600 to-violet-600 flex items-center justify-center shadow-md shadow-indigo-500/20 group-hover:scale-105 active:scale-95 transition-all">
-                        <svg class="w-4.5 h-4.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                        </svg>
-                    </div>
-                    <span class="text-xl font-black tracking-tight text-slate-900">Kosan<span class="text-indigo-600">.</span></span>
+                    <img src="{{ asset('images/logos/logo.png') }}" class="h-8 w-auto group-hover:scale-102 active:scale-98 transition-all" alt="Kosan Logo">
                 </a>
 
                 <!-- Desktop Menu with Modern Pills styling -->
@@ -94,17 +90,25 @@
                     <a href="{{ route('home') }}" class="text-xs font-bold px-3.5 py-1.5 rounded-lg transition-all {{ request()->routeIs('home') ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-650 hover:text-slate-900' }}">Beranda</a>
                     <a href="{{ route('features') }}" class="text-xs font-bold px-3.5 py-1.5 rounded-lg transition-all {{ request()->routeIs('features') ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-650 hover:text-slate-900' }}">Fitur</a>
                     <a href="{{ route('pricing') }}" class="text-xs font-bold px-3.5 py-1.5 rounded-lg transition-all {{ request()->routeIs('pricing') ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-650 hover:text-slate-900' }}">Harga</a>
-                    <a href="{{ route('resources') }}" class="text-xs font-bold px-3.5 py-1.5 rounded-lg transition-all {{ request()->routeIs('resources') ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-650 hover:text-slate-900' }}">Blog</a>
+                    <a href="{{ route('blog.index') }}" class="text-xs font-bold px-3.5 py-1.5 rounded-lg transition-all {{ (request()->routeIs('blog.index') || request()->routeIs('blog.detail') || request()->routeIs('resources')) ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-650 hover:text-slate-900' }}">Blog</a>
                     <a href="{{ route('about') }}" class="text-xs font-bold px-3.5 py-1.5 rounded-lg transition-all {{ request()->routeIs('about') ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-650 hover:text-slate-900' }}">Tentang</a>
                     <a href="{{ route('contact') }}" class="text-xs font-bold px-3.5 py-1.5 rounded-lg transition-all {{ request()->routeIs('contact') ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-650 hover:text-slate-900' }}">Kontak</a>
                 </nav>
 
                 <!-- Actions (CTAs) -->
                 <div class="hidden md:flex items-center gap-4">
-                    <a href="{{ route('login') }}" class="text-xs font-bold text-slate-650 hover:text-slate-950 transition">Masuk</a>
-                    <x-button variant="primary" size="sm" onclick="window.location.href='{{ route('register') }}'" class="text-xs font-bold py-2 px-4 shadow-sm shadow-indigo-500/10">
-                        Coba Gratis
-                    </x-button>
+                    @auth
+                        <a href="{{ route('dashboard') }}" class="text-xs font-bold text-indigo-605 hover:text-indigo-800 transition">Dashboard</a>
+                        <form method="POST" action="{{ route('logout') }}" class="inline">
+                            @csrf
+                            <button type="submit" class="text-xs font-bold text-slate-655 hover:text-rose-600 cursor-pointer bg-transparent border-0 transition">Keluar</button>
+                        </form>
+                    @else
+                        <a href="{{ route('login') }}" class="text-xs font-bold text-slate-650 hover:text-slate-950 transition">Masuk</a>
+                        <x-button variant="primary" size="sm" onclick="window.location.href='{{ route('register') }}'" class="text-xs font-bold py-2 px-4 shadow-sm shadow-indigo-500/10">
+                            Coba Gratis
+                        </x-button>
+                    @endauth
                 </div>
 
                 <!-- Mobile Hamburger -->
@@ -125,15 +129,23 @@
                     <a href="{{ route('home') }}" class="block py-2.5 px-4 rounded-xl text-xs font-bold text-slate-650 hover:bg-slate-50 transition">Beranda</a>
                     <a href="{{ route('features') }}" class="block py-2.5 px-4 rounded-xl text-xs font-bold text-slate-650 hover:bg-slate-50 transition">Fitur</a>
                     <a href="{{ route('pricing') }}" class="block py-2.5 px-4 rounded-xl text-xs font-bold text-slate-650 hover:bg-slate-50 transition">Harga</a>
-                    <a href="{{ route('resources') }}" class="block py-2.5 px-4 rounded-xl text-xs font-bold text-slate-650 hover:bg-slate-50 transition">Panduan &amp; Blog</a>
+                    <a href="{{ route('blog.index') }}" class="block py-2.5 px-4 rounded-xl text-xs font-bold {{ (request()->routeIs('blog.index') || request()->routeIs('blog.detail') || request()->routeIs('resources')) ? 'bg-slate-50 text-indigo-600' : 'text-slate-650 hover:bg-slate-50' }} transition">Panduan &amp; Blog</a>
                     <a href="{{ route('about') }}" class="block py-2.5 px-4 rounded-xl text-xs font-bold text-slate-650 hover:bg-slate-50 transition">Tentang Kami</a>
                     <a href="{{ route('contact') }}" class="block py-2.5 px-4 rounded-xl text-xs font-bold text-slate-650 hover:bg-slate-50 transition">Kontak</a>
                 </nav>
                 <div class="border-t border-slate-100 pt-4 flex flex-col gap-2.5">
-                    <a href="{{ route('login') }}" class="block text-center py-2.5 text-xs font-bold text-slate-650 hover:bg-slate-50 rounded-xl transition">Masuk</a>
-                    <x-button variant="primary" class="w-full text-center py-3 text-xs font-bold" onclick="window.location.href='{{ route('register') }}'">
-                        Coba Gratis 14 Hari
-                    </x-button>
+                    @auth
+                        <a href="{{ route('dashboard') }}" class="block text-center py-2.5 text-xs font-bold text-indigo-600 hover:bg-slate-50 rounded-xl transition">Dashboard</a>
+                        <form method="POST" action="{{ route('logout') }}" class="w-full">
+                            @csrf
+                            <button type="submit" class="w-full text-center py-2.5 text-xs font-bold text-rose-600 hover:bg-rose-50 rounded-xl transition cursor-pointer bg-transparent border-0">Keluar</button>
+                        </form>
+                    @else
+                        <a href="{{ route('login') }}" class="block text-center py-2.5 text-xs font-bold text-slate-650 hover:bg-slate-50 rounded-xl transition">Masuk</a>
+                        <x-button variant="primary" class="w-full text-center py-3 text-xs font-bold" onclick="window.location.href='{{ route('register') }}'">
+                            Coba Gratis 14 Hari
+                        </x-button>
+                    @endauth
                 </div>
             </div>
         </div>
@@ -148,8 +160,8 @@
     <a href="https://wa.me/{{ $globals['whatsapp'] ?? '6281234567890' }}" target="_blank" 
        class="fixed bottom-6 right-6 z-40 w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center text-white shadow-xl hover:bg-emerald-600 hover:scale-110 active:scale-95 transition duration-200" 
        aria-label="Hubungi Kami via WhatsApp">
-        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.262 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.731-1.456L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.743.003-2.602-1.012-5.05-2.859-6.898C16.63 2.115 14.183 1.1 11.582 1.1 6.148 1.1 1.72 5.47 1.716 10.843c-.001 1.64.453 3.24 1.314 4.678L2.006 20.9l5.097-1.336z"/>
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-whatsapp" viewBox="0 0 16 16">
+            <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
         </svg>
         <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-rose-500 border border-white rounded-full"></span>
     </a>
@@ -178,12 +190,7 @@
                 <!-- Left: Branding & Pitch -->
                 <div class="lg:col-span-7 space-y-5">
                     <div class="flex items-center gap-2.5">
-                        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center shadow-md shadow-indigo-500/10">
-                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                            </svg>
-                        </div>
-                        <span class="text-2xl font-black tracking-tight text-slate-900">Kosan<span class="text-indigo-600">.</span></span>
+                        <img src="{{ asset('images/logos/logo.png') }}" class="h-9 w-auto" alt="Kosan Logo">
                     </div>
                     
                     <p class="text-sm text-slate-500 leading-relaxed max-w-xl">
@@ -248,8 +255,8 @@
                 <div class="space-y-4">
                     <h4 class="text-xs font-bold text-slate-900 uppercase tracking-widest">Pusat Informasi</h4>
                     <ul class="space-y-2.5 text-xs text-slate-500 font-medium">
-                        <li><a href="{{ route('resources') }}" class="hover:text-indigo-600 hover:translate-x-0.5 transition duration-150 inline-block">Artikel &amp; Panduan Bisnis</a></li>
-                        <li><a href="{{ route('resources') }}" class="hover:text-indigo-600 hover:translate-x-0.5 transition duration-150 inline-block">Studi Kasus Sukses Mitra</a></li>
+                        <li><a href="{{ route('blog.index') }}" class="hover:text-indigo-600 hover:translate-x-0.5 transition duration-150 inline-block">Artikel &amp; Panduan Bisnis</a></li>
+                        <li><a href="{{ route('blog.index', ['category' => 'studi-kasus']) }}" class="hover:text-indigo-600 hover:translate-x-0.5 transition duration-150 inline-block">Studi Kasus Sukses Mitra</a></li>
                         <li><a href="{{ route('pricing') }}" class="hover:text-indigo-600 hover:translate-x-0.5 transition duration-150 inline-block">Kalkulator Penghematan ROI</a></li>
                         <li><a href="{{ route('contact') }}" class="hover:text-indigo-600 hover:translate-x-0.5 transition duration-150 inline-block">Pusat Bantuan Teknis</a></li>
                     </ul>

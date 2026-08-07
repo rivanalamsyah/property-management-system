@@ -56,11 +56,14 @@ class TenantMiddleware
 
         // 4. Set Tenant context if resolved
         if ($tenant) {
-            if ($tenant->status === \App\Enums\WorkspaceStatus::SUSPENDED || $tenant->status === \App\Enums\WorkspaceStatus::BLOCKED || $tenant->status === \App\Enums\WorkspaceStatus::ARCHIVED) {
+            if ($request->is('dashboard*') && ($tenant->status === \App\Enums\WorkspaceStatus::SUSPENDED || $tenant->status === \App\Enums\WorkspaceStatus::BLOCKED || $tenant->status === \App\Enums\WorkspaceStatus::ARCHIVED)) {
                 abort(403, 'Your workspace is currently suspended or inactive.');
             }
             
             $this->tenantManager->setTenant($tenant);
+
+            // Set Spatie permission team context
+            setPermissionsTeamId($tenant->id);
 
             // Redirect to onboarding if pending
             if ($tenant->status === \App\Enums\WorkspaceStatus::PENDING && !$request->is('onboarding*') && !$request->is('logout') && !$request->is('email/*')) {

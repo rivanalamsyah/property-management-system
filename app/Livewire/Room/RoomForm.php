@@ -96,7 +96,7 @@ class RoomForm extends Component
     public function setTab(string $tab): void
     {
         if (!$this->roomId && $tab !== 'profile') {
-            $this->dispatch('toast', ['type' => 'warning', 'message' => 'Please save the profile first before configuring details.']);
+            $this->dispatch('toast', ['type' => 'warning', 'message' => 'Silakan simpan profil terlebih dahulu sebelum mengonfigurasi detail.']);
             return;
         }
         $this->activeTab = $tab;
@@ -154,16 +154,19 @@ class RoomForm extends Component
                 $room = Room::findOrFail($this->roomId);
                 
                 if (Auth::user()->cannot('update', $room)) {
-                    abort(403, 'Unauthorized.');
+                    abort(403, 'Akses ditolak.');
                 }
 
                 $service->updateRoom($room, $data, $this->overrideActiveCheck);
-                $this->dispatch('toast', ['type' => 'success', 'message' => 'Room configurations updated successfully!']);
+                $this->dispatch('toast', ['type' => 'success', 'message' => 'Konfigurasi kamar berhasil diperbarui!']);
             } else {
+                if (Auth::user()->cannot('create', Room::class)) {
+                    abort(403, 'Akses ditolak.');
+                }
                 $room = $service->createRoom($data);
                 $this->roomId = $room->id;
                 
-                $this->dispatch('toast', ['type' => 'success', 'message' => 'Room profile created. Proceeding to config...']);
+                $this->dispatch('toast', ['type' => 'success', 'message' => 'Profil kamar berhasil dibuat. Melanjutkan ke konfigurasi...']);
                 $this->redirect(route('rooms.edit', $room->id));
             }
         } catch (\Exception $e) {
@@ -174,44 +177,67 @@ class RoomForm extends Component
     public function saveFacilities(RoomService $service): void
     {
         $room = Room::findOrFail($this->roomId);
+        if (Auth::user()->cannot('update', $room)) {
+            abort(403, 'Akses ditolak.');
+        }
+
         $service->syncFacilities($room, $this->selectedFacilities);
 
-        $this->dispatch('toast', ['type' => 'success', 'message' => 'Room facilities updated!']);
+        $this->dispatch('toast', ['type' => 'success', 'message' => 'Fasilitas kamar berhasil diperbarui!']);
     }
 
     public function uploadGalleryImage(RoomService $service): void
     {
+        $room = Room::findOrFail($this->roomId);
+        if (Auth::user()->cannot('update', $room)) {
+            abort(403, 'Akses ditolak.');
+        }
+
         $this->validate([
             'galleryUpload' => ['required', 'image', 'max:2048'],
             'galleryLabel' => ['nullable', 'string', 'max:100'],
         ]);
 
-        $room = Room::findOrFail($this->roomId);
         $path = $this->galleryUpload->store('rooms', 'public');
         
         $isFirst = $room->images()->count() === 0;
         $service->addRoomImage($room, $path, $isFirst, $this->galleryLabel);
 
         $this->reset(['galleryUpload', 'galleryLabel']);
-        $this->dispatch('toast', ['type' => 'success', 'message' => 'Image added to room gallery.']);
+        $this->dispatch('toast', ['type' => 'success', 'message' => 'Gambar berhasil ditambahkan ke galeri kamar.']);
     }
 
     public function setAsCover(int $id, RoomService $service): void
     {
+        $room = Room::findOrFail($this->roomId);
+        if (Auth::user()->cannot('update', $room)) {
+            abort(403, 'Akses ditolak.');
+        }
+
         $image = RoomImage::findOrFail($id);
         $service->setCoverImage($image);
-        $this->dispatch('toast', ['type' => 'success', 'message' => 'Set cover image successfully.']);
+        $this->dispatch('toast', ['type' => 'success', 'message' => 'Berhasil mengatur gambar sampul.']);
     }
 
     public function deleteGalleryImage(int $id, RoomService $service): void
     {
+        $room = Room::findOrFail($this->roomId);
+        if (Auth::user()->cannot('update', $room)) {
+            abort(403, 'Akses ditolak.');
+        }
+
         $image = RoomImage::findOrFail($id);
         $service->removeRoomImage($image);
-        $this->dispatch('toast', ['type' => 'success', 'message' => 'Gallery image deleted.']);
+        $this->dispatch('toast', ['type' => 'success', 'message' => 'Gambar galeri berhasil dihapus.']);
     }
 
     public function moveGalleryUp(int $id, RoomService $service): void
     {
+        $room = Room::findOrFail($this->roomId);
+        if (Auth::user()->cannot('update', $room)) {
+            abort(403, 'Akses ditolak.');
+        }
+
         $image = RoomImage::findOrFail($id);
         $previous = RoomImage::where('room_id', $this->roomId)
             ->where('display_order', '<', $image->display_order)
@@ -227,6 +253,11 @@ class RoomForm extends Component
 
     public function moveGalleryDown(int $id, RoomService $service): void
     {
+        $room = Room::findOrFail($this->roomId);
+        if (Auth::user()->cannot('update', $room)) {
+            abort(403, 'Akses ditolak.');
+        }
+
         $image = RoomImage::findOrFail($id);
         $next = RoomImage::where('room_id', $this->roomId)
             ->where('display_order', '>', $image->display_order)
@@ -243,8 +274,12 @@ class RoomForm extends Component
     public function regenerateQrCode(RoomService $service): void
     {
         $room = Room::findOrFail($this->roomId);
+        if (Auth::user()->cannot('update', $room)) {
+            abort(403, 'Akses ditolak.');
+        }
+
         $service->generateQrCode($room);
-        $this->dispatch('toast', ['type' => 'success', 'message' => 'QR Code regenerated locally!']);
+        $this->dispatch('toast', ['type' => 'success', 'message' => 'Kode QR berhasil dibuat ulang secara lokal!']);
     }
 
     public function render()

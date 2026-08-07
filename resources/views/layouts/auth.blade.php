@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="theme-color" content="#4f46e5">
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Kosan">
@@ -99,12 +100,7 @@
 
             <!-- Logo -->
             <a href="{{ route('home') }}" class="relative z-10 flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center">
-                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-                    </svg>
-                </div>
-                <span class="text-xl font-black text-white tracking-tight">Kosan<span class="text-indigo-300">.</span></span>
+                <img src="{{ asset('images/logos/logo.png') }}" class="h-10 w-auto" alt="Kosan Logo">
             </a>
 
             <!-- Center Content -->
@@ -196,12 +192,7 @@
             <!-- Mobile Logo (hidden on desktop) -->
             <div class="lg:hidden mb-8">
                 <a href="{{ route('home') }}" class="flex items-center gap-2.5">
-                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/25">
-                        <svg class="w-4.5 h-4.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-                        </svg>
-                    </div>
-                    <span class="text-xl font-black text-slate-900 tracking-tight">Kosan<span class="text-indigo-600">.</span></span>
+                    <img src="{{ asset('images/logos/logo.png') }}" class="h-9 w-auto" alt="Kosan Logo">
                 </a>
             </div>
 

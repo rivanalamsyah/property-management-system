@@ -12,6 +12,13 @@ class WorkspaceSearch extends Component
 {
     use WithPagination;
 
+    public function mount(): void
+    {
+        if (!\Illuminate\Support\Facades\Auth::user()->hasRole('super_admin')) {
+            abort(403, 'Unauthorized.');
+        }
+    }
+
     public string $search = '';
     public string $status = '';
     public string $plan = '';

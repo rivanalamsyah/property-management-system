@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
 
 class Payment extends Model
 {
@@ -37,30 +38,77 @@ class Payment extends Model
     ];
 
     protected $casts = [
-        'status' => PaymentStatus::class,
-        'payment_method' => PaymentMethod::class,
-        'payment_date' => 'date',
-        'amount_paid' => 'decimal:2',
-        'admin_fee' => 'decimal:2',
-        'penalty_paid' => 'decimal:2',
-        'verified_at' => 'datetime',
+        'status'          => PaymentStatus::class,
+        'payment_method'  => PaymentMethod::class,
+        'payment_date'    => 'date',
+        'amount_paid'     => 'decimal:2',
+        'admin_fee'       => 'decimal:2',
+        'penalty_paid'    => 'decimal:2',
+        'verified_at'     => 'datetime',
     ];
 
-    protected static function booted()
+    protected static function booted(): void
     {
-        static::creating(function ($payment) {
+        static::creating(function (Payment $payment) {
             if (empty($payment->transaction_number)) {
-                $year = date('Y');
-                // Calculate next increment offset under active workspace
-                $count = static::where('tenant_id', $payment->tenant_id)
-                    ->whereYear('created_at', $year)
-                    ->count();
-                
-                $sequence = str_pad($count + 1, 6, '0', STR_PAD_LEFT);
-                $payment->transaction_number = "TXN-{$year}-{$sequence}";
+                $payment->transaction_number = static::generateNumber($payment->tenant_id, 'TXN');
             }
         });
     }
+
+    /**
+     * Thread-safe transaction number generator using SELECT FOR UPDATE.
+     */
+    public static function generateNumber(string $tenantId, string $prefix): string
+    {
+        return DB::transaction(function () use ($tenantId, $prefix) {
+            $year = date('Y');
+            $count = static::where('tenant_id', $tenantId)
+                ->whereYear('created_at', $year)
+                ->lockForUpdate()
+                ->count();
+            $sequence = str_pad($count + 1, 6, '0', STR_PAD_LEFT);
+            return "{$prefix}-{$year}-{$sequence}";
+        });
+    }
+
+    // ─── Scopes ────────────────────────────────────────────────────────────────
+
+    public function scopeCompleted($query)
+    {
+        return $query->where('status', PaymentStatus::COMPLETED);
+    }
+
+    public function scopeWaitingVerification($query)
+    {
+        return $query->where('status', PaymentStatus::WAITING_VERIFICATION);
+    }
+
+    public function scopeForCurrentMonth($query)
+    {
+        return $query->whereMonth('payment_date', now()->month)
+                     ->whereYear('payment_date', now()->year);
+    }
+
+    // ─── Accessors ─────────────────────────────────────────────────────────────
+
+    /**
+     * Total amount paid including admin fee.
+     */
+    public function getTotalPaidAttribute(): float
+    {
+        return (float) $this->amount_paid + (float) $this->admin_fee;
+    }
+
+    /**
+     * Whether proof of payment is attached.
+     */
+    public function getHasProofAttribute(): bool
+    {
+        return !empty($this->proof_of_payment_path);
+    }
+
+    // ─── Relationships ─────────────────────────────────────────────────────────
 
     public function invoice(): BelongsTo
     {

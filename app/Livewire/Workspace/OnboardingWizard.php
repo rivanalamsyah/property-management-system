@@ -184,8 +184,8 @@ class OnboardingWizard extends Component
         $callback = function() use ($columns) {
             $file = fopen('php://output', 'w');
             fputcsv($file, $columns);
-            fputcsv($file, ['101', '1', 'Standard', '1200000', '500000', '3x4', 'vacant']);
-            fputcsv($file, ['102', '1', 'Deluxe', '1500000', '500000', '3x4', 'vacant']);
+            fputcsv($file, ['101', '1', 'Standard', '1200000', '500000', '3x4', 'available']);
+            fputcsv($file, ['102', '1', 'Deluxe', '1500000', '500000', '3x4', 'available']);
             fclose($file);
         };
 
@@ -242,10 +242,18 @@ class OnboardingWizard extends Component
         ]);
 
         // 2. Create Boarding House
+        $bhSlug = \Illuminate\Support\Str::slug($this->house_name);
+        $originalBhSlug = $bhSlug;
+        $count = 1;
+        while (BoardingHouse::where('slug', $bhSlug)->exists()) {
+            $bhSlug = $originalBhSlug . '-' . $count;
+            $count++;
+        }
+
         $bh = BoardingHouse::create([
             'tenant_id' => $tenant->id,
             'name' => $this->house_name,
-            'slug' => \Illuminate\Support\Str::slug($this->house_name),
+            'slug' => $bhSlug,
             'description' => 'Automatically generated during workspace onboarding.',
             'address' => $this->house_address,
             'province' => $this->house_province,
@@ -281,7 +289,7 @@ class OnboardingWizard extends Component
             tenantId: $tenant->id
         );
 
-        $this->dispatch('toast', ['type' => 'success', 'message' => 'Workspace setup completed successfully!']);
+        $this->dispatch('toast', ['type' => 'success', 'message' => 'Penyiapan ruang kerja berhasil diselesaikan!']);
         $this->redirect(route('dashboard'));
     }
 

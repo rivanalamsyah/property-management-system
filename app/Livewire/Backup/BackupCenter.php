@@ -21,7 +21,7 @@ class BackupCenter extends Component
 
     public function mount(): void
     {
-        if (!Auth::user()->hasRole('owner')) {
+        if (!Auth::user()->hasRole('super_admin')) {
             abort(403, 'Unauthorized. Super Admin access only.');
         }
     }

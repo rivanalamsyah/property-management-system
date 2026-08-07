@@ -99,12 +99,16 @@ class ContractShow extends Component
 
     public function uploadAttachment(ContractService $service): void
     {
+        $contract = Contract::findOrFail($this->contractId);
+        if (Auth::user()->cannot('update', $contract)) {
+            abort(403, 'Unauthorized.');
+        }
+
         $this->validate([
             'attachUpload' => ['required', 'file', 'max:5120', 'mimes:jpg,jpeg,png,pdf,docx,zip'], // Max 5MB
             'attachLabel' => ['required', 'string', 'max:100'],
         ]);
 
-        $contract = Contract::findOrFail($this->contractId);
         $path = $this->attachUpload->store('attachments', 'public');
 
         $service->addAttachment($contract, $path, $this->attachLabel);
@@ -115,6 +119,11 @@ class ContractShow extends Component
 
     public function deleteAttachment(int $id, ContractService $service): void
     {
+        $contract = Contract::findOrFail($this->contractId);
+        if (Auth::user()->cannot('update', $contract)) {
+            abort(403, 'Unauthorized.');
+        }
+
         $attachment = ContractAttachment::findOrFail($id);
         $service->removeAttachment($attachment);
         $this->dispatch('toast', ['type' => 'success', 'message' => 'Attachment deleted.']);

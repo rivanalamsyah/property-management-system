@@ -12,7 +12,7 @@ class ContractPolicy
 
     public function viewAny(User $user): bool
     {
-        return tenant() !== null;
+        return tenant() !== null && $user->hasPermission('manage-rooms');
     }
 
     public function view(User $user, Contract $contract): bool

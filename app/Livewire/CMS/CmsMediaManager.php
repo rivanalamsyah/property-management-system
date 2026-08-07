@@ -20,6 +20,13 @@ class CmsMediaManager extends Component
     public ?string $selectedMediaId = null;
     public $replace_file;
 
+    public function mount(): void
+    {
+        if (!\Illuminate\Support\Facades\Auth::user()->hasRole('super_admin')) {
+            abort(403, 'Unauthorized. Super Admin access only.');
+        }
+    }
+
     protected $queryString = [
         'folder' => ['except' => '/'],
         'search' => ['except' => ''],

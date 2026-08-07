@@ -80,7 +80,10 @@
                     <x-button variant="primary" size="lg" class="w-full sm:w-auto text-center px-8 py-3.5 shadow-md shadow-indigo-500/25 transition duration-200 hover:-translate-y-0.5 active:translate-y-0 text-xs font-bold cursor-pointer" onclick="window.location.href='{{ $heroContent['button_url'] ?? route('register') }}'">
                         {{ $heroContent['button_label'] ?? 'Coba Gratis 14 Hari' }}
                     </x-button>
-                    <x-button variant="outline" size="lg" class="w-full sm:w-auto text-center px-8 py-3.5 border border-slate-200 bg-white hover:bg-slate-50 text-xs font-bold transition duration-200 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer" onclick="window.location.href='{{ route('contact') }}'">
+                    <x-button variant="outline" size="lg" class="w-full sm:w-auto text-center px-8 py-3.5 border border-slate-200 bg-white hover:bg-slate-50 text-slate-800 !text-slate-800 text-xs font-bold transition duration-200 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer flex items-center gap-2" onclick="window.location.href='{{ route('contact') }}'">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-whatsapp" viewBox="0 0 16 16">
+                            <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
+                        </svg>
                         Hubungi Sales &amp; Demo
                     </x-button>
                 </div>
@@ -97,35 +100,138 @@
                 </div>
             </div>
 
-            <!-- Right Column: Interactive WebGL Three.js 3D House View -->
-            <div class="lg:col-span-6 relative pt-12 lg:pt-0 min-h-[450px] flex items-center justify-center">
+            <!-- Right Column: Glassmorphic Premium Dashboard Showcase -->
+            <div class="lg:col-span-6 relative pt-12 lg:pt-0 min-h-[480px] flex items-center justify-center">
                 <!-- Backlight Glow Spot -->
-                <div class="absolute -inset-10 bg-gradient-to-tr from-indigo-500/20 to-purple-500/20 rounded-full blur-3xl -z-10 pulse-glow"></div>
+                <div class="absolute -inset-10 bg-gradient-to-tr from-indigo-500/15 to-purple-500/15 rounded-full blur-3xl -z-10 animate-pulse"></div>
 
-                <!-- WebGL Canvas Viewport Wrapper -->
-                <div class="w-full h-[400px] relative">
-                    <canvas id="three-house-canvas" class="w-full h-full relative z-10 cursor-grab active:cursor-grabbing outline-hidden"></canvas>
+                <!-- Glass Dashboard Container -->
+                <div class="w-full max-w-xl bg-white/70 backdrop-blur-xl border border-slate-200/80 rounded-3xl p-5 shadow-2xl relative overflow-hidden text-left flex flex-col gap-4">
+                    <!-- Glass shine reflection overlay -->
+                    <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent pointer-events-none"></div>
+
+                    <!-- Mockup Header -->
+                    <div class="flex items-center justify-between border-b border-slate-200/60 pb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="w-3 h-3 rounded-full bg-rose-400"></span>
+                            <span class="w-3 h-3 rounded-full bg-amber-450"></span>
+                            <span class="w-3 h-3 rounded-full bg-emerald-450"></span>
+                            <span class="text-xs font-bold text-slate-400 ml-2 font-mono">kosan-dashboard.app</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-20 h-5 bg-slate-100/80 border border-slate-200/30 rounded-lg"></div>
+                            <div class="w-6 h-6 rounded-full bg-slate-200 border border-slate-200/50"></div>
+                        </div>
+                    </div>
+
+                    <!-- Mockup Body Layout -->
+                    <div class="grid grid-cols-12 gap-4">
+                        <!-- Sidebar Mockup (2 Cols) -->
+                        <div class="col-span-2 flex flex-col gap-3.5 border-r border-slate-200/50 pr-3.5">
+                            <div class="w-full aspect-square bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center font-bold shadow-xs">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+                            </div>
+                            <div class="w-full aspect-square text-slate-400 hover:text-slate-650 rounded-xl flex items-center justify-center transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                            </div>
+                            <div class="w-full aspect-square text-slate-400 hover:text-slate-650 rounded-xl flex items-center justify-center transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                            </div>
+                            <div class="w-full aspect-square text-slate-400 hover:text-slate-655 rounded-xl flex items-center justify-center transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            </div>
+                            <div class="w-full aspect-square text-slate-400 hover:text-slate-655 rounded-xl flex items-center justify-center transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4v2m0-6V4"/></svg>
+                            </div>
+                        </div>
+
+                        <!-- Main Grid Area (10 Cols) -->
+                        <div class="col-span-10 space-y-4">
+                            <!-- Dashboard Cards Grid -->
+                            <div class="grid grid-cols-3 gap-2.5">
+                                <div class="bg-slate-50 border border-slate-100 rounded-2xl p-2.5 space-y-1">
+                                    <span class="text-[9px] uppercase font-bold text-slate-400">Okupansi</span>
+                                    <div class="text-sm font-black text-slate-800">94.2%</div>
+                                </div>
+                                <div class="bg-slate-50 border border-slate-100 rounded-2xl p-2.5 space-y-1">
+                                    <span class="text-[9px] uppercase font-bold text-slate-400">Pendapatan</span>
+                                    <div class="text-[11px] font-black text-slate-850 truncate">Rp 45.8M</div>
+                                </div>
+                                <div class="bg-slate-50 border border-slate-100 rounded-2xl p-2.5 space-y-1">
+                                    <span class="text-[9px] uppercase font-bold text-slate-400">Keluhan</span>
+                                    <div class="text-sm font-black text-rose-600">2 Aktif</div>
+                                </div>
+                            </div>
+
+                            <!-- Interactive Receipt Verification Stream -->
+                            <div class="space-y-2">
+                                <h4 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Mutasi Pembayaran Real-time</h4>
+                                <div class="space-y-2">
+                                    <!-- Verified Payment row -->
+                                    <div class="bg-white/80 border border-slate-150 rounded-2xl p-3 flex items-center justify-between shadow-2xs">
+                                        <div class="flex items-center gap-2.5">
+                                            <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-[10px]">
+                                                BS
+                                            </div>
+                                            <div class="space-y-0.5">
+                                                <h4 class="text-[11px] font-bold text-slate-850">Budi Santoso</h4>
+                                                <p class="text-[9px] text-slate-400 font-semibold">Kamar 101 &bull; Transfer Bank</p>
+                                            </div>
+                                        </div>
+                                        <div class="text-right space-y-0.5">
+                                            <div class="text-[10px] font-bold text-slate-800">Rp 1.500.000</div>
+                                            <span class="inline-flex items-center gap-1 text-[9px] text-emerald-600 font-extrabold px-2 py-0.5 bg-emerald-50 border border-emerald-100/50 rounded-full">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                                Lunas
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Pending Verification row -->
+                                    <div class="bg-white/80 border border-slate-150 rounded-2xl p-3 flex items-center justify-between shadow-2xs">
+                                        <div class="flex items-center gap-2.5">
+                                            <div class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-[10px]">
+                                                DL
+                                            </div>
+                                            <div class="space-y-0.5">
+                                                <h4 class="text-[11px] font-bold text-slate-850">Dewi Lestari</h4>
+                                                <p class="text-[9px] text-slate-400 font-semibold">Kamar 203 &bull; QRIS</p>
+                                            </div>
+                                        </div>
+                                        <div class="text-right space-y-0.5">
+                                            <div class="text-[10px] font-bold text-slate-800">Rp 2.200.000</div>
+                                            <span class="inline-flex items-center gap-1 text-[9px] text-amber-600 font-extrabold px-2 py-0.5 bg-amber-50 border border-amber-100/50 rounded-full">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                                                Menunggu Verifikasi
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Floating Interactive Widget: Real-time Auto Verification Message -->
-                <div class="absolute top-[10px] left-[5px] sm:left-[-15px] z-30 bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-2xl p-3 shadow-lg flex items-center gap-3 animate-[bounce_4.5s_infinite] pointer-events-none">
-                    <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
-                        <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <!-- Floating Badges Around -->
+                <!-- Badge 1: Portal Mandiri Penghuni -->
+                <div class="absolute -top-3 -right-4 z-30 bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl p-3 shadow-lg flex items-center gap-3 animate-[bounce_5.5s_infinite_1.5s] pointer-events-none max-w-[200px]">
+                    <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-650 flex items-center justify-center">
+                        <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
                     </div>
                     <div class="text-left space-y-0.5">
-                        <span class="text-[9px] uppercase font-extrabold text-slate-400 tracking-wider">Verifikasi Berhasil</span>
-                        <h4 class="text-xs font-bold text-slate-800">Kamar 202 &bull; Lunas</h4>
+                        <span class="text-[9px] uppercase font-extrabold text-slate-400 tracking-wider">Portal PWA</span>
+                        <h4 class="text-xs font-bold text-slate-800">Tenant Upload Bukti</h4>
                     </div>
                 </div>
 
-                <!-- Floating Interactive Widget 2: Occupancy Gauge Map -->
-                <div class="absolute bottom-[-10px] right-[5px] sm:right-[-15px] z-30 bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-2xl p-4 shadow-lg space-y-2 animate-[bounce_5.5s_infinite_1.5s] pointer-events-none max-w-[200px]">
-                    <div class="flex justify-between items-center gap-6">
-                        <span class="text-[9px] uppercase font-extrabold text-slate-400">Okupansi Kamar</span>
-                        <span class="text-xs font-black text-indigo-600">92.4%</span>
+                <!-- Badge 2: Auto Mutasi Bank -->
+                <div class="absolute -bottom-4 -left-4 z-30 bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl p-3 shadow-lg flex items-center gap-3 animate-[bounce_4.5s_infinite] pointer-events-none max-w-[220px]">
+                    <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+                        ✓
                     </div>
-                    <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                        <div class="bg-indigo-600 h-full rounded-full" style="width: 92%"></div>
+                    <div class="text-left space-y-0.5">
+                        <span class="text-[9px] uppercase font-extrabold text-slate-400 tracking-wider">Mutasi Bank</span>
+                        <h4 class="text-xs font-bold text-slate-800">BCA &amp; Mandiri Aktif</h4>
                     </div>
                 </div>
             </div>
@@ -578,6 +684,84 @@
         </section>
     @endif
 
+    <!-- SECTION 9.8: INTERACTIVE FAQ SECTION -->
+    <section class="py-24 bg-slate-50/30 border-y border-slate-200/50" x-data="{ activeFaq: null }">
+        <div class="max-w-4xl mx-auto px-6 space-y-12">
+            <div class="text-center space-y-3">
+                <h2 class="text-xs font-extrabold text-indigo-600 uppercase tracking-widest">FAQ</h2>
+                <h3 class="text-3xl font-black text-slate-900 tracking-tight leading-tight">Pertanyaan yang Sering Diajukan</h3>
+                <p class="text-sm text-slate-500 max-w-lg mx-auto">Semua yang perlu Anda ketahui tentang sistem operasi manajemen properti Kosan.</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- FAQ 1 -->
+                <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden transition duration-200" :class="activeFaq === 1 ? 'shadow-md border-indigo-200' : 'hover:border-slate-350'">
+                    <button class="w-full text-left px-6 py-5 font-bold text-slate-800 flex justify-between items-center text-sm sm:text-base hover:bg-slate-50/50 transition cursor-pointer"
+                            @click="activeFaq = activeFaq === 1 ? null : 1">
+                        <span>Apakah data properti saya aman dan terisolasi dari pemilik kos lain?</span>
+                        <svg class="w-5 h-5 text-slate-400 transition-transform duration-350" :class="activeFaq === 1 ? 'rotate-180 text-indigo-600' : ''" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                    </button>
+                    <div class="px-6 pb-5 text-xs sm:text-sm text-slate-550 leading-relaxed font-medium transition-all duration-300"
+                         x-show="activeFaq === 1" x-transition>
+                        Tentu saja. Kosan dibangun di atas arsitektur multi-tenant yang tangguh dengan isolasi database yang ketat. Setiap workspace tenant properti terpisah secara mutlak, sehingga data sensitif Anda (seperti pembukuan dan NIK penyewa) terjamin keamanannya dan tidak dapat diakses oleh pihak luar.
+                    </div>
+                </div>
+
+                <!-- FAQ 2 -->
+                <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden transition duration-200" :class="activeFaq === 2 ? 'shadow-md border-indigo-200' : 'hover:border-slate-350'">
+                    <button class="w-full text-left px-6 py-5 font-bold text-slate-800 flex justify-between items-center text-sm sm:text-base hover:bg-slate-50/50 transition cursor-pointer"
+                            @click="activeFaq = activeFaq === 2 ? null : 2">
+                        <span>Bagaimana sistem verifikasi pembayaran otomatis bekerja?</span>
+                        <svg class="w-5 h-5 text-slate-400 transition-transform duration-350" :class="activeFaq === 2 ? 'rotate-180 text-indigo-600' : ''" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                    </button>
+                    <div class="px-6 pb-5 text-xs sm:text-sm text-slate-550 leading-relaxed font-medium transition-all duration-300"
+                         x-show="activeFaq === 2" x-transition>
+                        Penghuni dapat mengunggah bukti transfer melalui Portal PWA mereka. Sistem kami secara cerdas mengekstrak data dari bukti transfer tersebut, kemudian staf Anda cukup melakukan verifikasi silang mutasi bank yang terhubung dengan cepat melalui dashboard pusat tanpa harus mengecek rekening koran secara manual.
+                    </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden transition duration-200" :class="activeFaq === 3 ? 'shadow-md border-indigo-200' : 'hover:border-slate-350'">
+                    <button class="w-full text-left px-6 py-5 font-bold text-slate-800 flex justify-between items-center text-sm sm:text-base hover:bg-slate-50/50 transition cursor-pointer"
+                            @click="activeFaq = activeFaq === 3 ? null : 3">
+                        <span>Apakah penghuni harus mendownload aplikasi dari Play Store / App Store?</span>
+                        <svg class="w-5 h-5 text-slate-400 transition-transform duration-350" :class="activeFaq === 3 ? 'rotate-180 text-indigo-600' : ''" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                    </button>
+                    <div class="px-6 pb-5 text-xs sm:text-sm text-slate-550 leading-relaxed font-medium transition-all duration-300"
+                         x-show="activeFaq === 3" x-transition>
+                        Tidak perlu. Portal Penghuni Kosan berbasis Progressive Web App (PWA) yang dapat langsung diakses melalui web browser ponsel pintar dan diinstal ke layar beranda seperti aplikasi native, tanpa perlu mengunduh file besar atau registrasi di Play Store/App Store.
+                    </div>
+                </div>
+
+                <!-- FAQ 4 -->
+                <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden transition duration-200" :class="activeFaq === 4 ? 'shadow-md border-indigo-200' : 'hover:border-slate-350'">
+                    <button class="w-full text-left px-6 py-5 font-bold text-slate-800 flex justify-between items-center text-sm sm:text-base hover:bg-slate-50/50 transition cursor-pointer"
+                            @click="activeFaq = activeFaq === 4 ? null : 4">
+                        <span>Apakah Kosan terintegrasi dengan WhatsApp Gateway?</span>
+                        <svg class="w-5 h-5 text-slate-400 transition-transform duration-350" :class="activeFaq === 4 ? 'rotate-180 text-indigo-600' : ''" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                    </button>
+                    <div class="px-6 pb-5 text-xs sm:text-sm text-slate-550 leading-relaxed font-medium transition-all duration-300"
+                         x-show="activeFaq === 4" x-transition>
+                        Ya. Mulai dari paket Professional, Kosan dilengkapi WhatsApp Gateway untuk mengirim pengingat tagihan bulanan otomatis, rincian biaya, serta tautan kuitansi pelunasan digital langsung ke nomor WhatsApp penghuni.
+                    </div>
+                </div>
+
+                <!-- FAQ 5 -->
+                <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden transition duration-200" :class="activeFaq === 5 ? 'shadow-md border-indigo-200' : 'hover:border-slate-350'">
+                    <button class="w-full text-left px-6 py-5 font-bold text-slate-800 flex justify-between items-center text-sm sm:text-base hover:bg-slate-50/50 transition cursor-pointer"
+                            @click="activeFaq = activeFaq === 5 ? null : 5">
+                        <span>Bagaimana cara melakukan migrasi data penyewa dari file Excel?</span>
+                        <svg class="w-5 h-5 text-slate-400 transition-transform duration-350" :class="activeFaq === 5 ? 'rotate-180 text-indigo-600' : ''" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                    </button>
+                    <div class="px-6 pb-5 text-xs sm:text-sm text-slate-550 leading-relaxed font-medium transition-all duration-300"
+                         x-show="activeFaq === 5" x-transition>
+                        Sangat mudah. Anda hanya perlu mengunduh template Excel bulk import yang disediakan di menu pengaturan kamar/penghuni, mengisinya, dan mengunggahnya kembali. Seluruh data properti Anda akan terisi instan dalam hitungan detik.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Section 10: Strong Bottom CTA (UCD: Peak-End Rule Final Conversion) -->
     <section class="py-24 bg-gradient-to-tr from-indigo-900 via-indigo-950 to-slate-950 text-white relative overflow-hidden">
         <div class="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(99,102,241,0.25),transparent_45%)]"></div>
@@ -592,187 +776,15 @@
                 <x-button variant="primary" size="lg" class="!bg-white !text-indigo-950 hover:!bg-indigo-50 !border-white w-full sm:w-auto text-center font-bold px-8 py-3.5 shadow-lg cursor-pointer" onclick="window.location.href='{{ route('register') }}'">
                     Coba Gratis 14 Hari
                 </x-button>
-                <x-button variant="outline" size="lg" class="!border-indigo-400/30 !text-white hover:!bg-white/10 w-full sm:w-auto text-center px-8 py-3.5 cursor-pointer" onclick="window.location.href='{{ route('contact') }}'">
+                <a href="{{ route('contact') }}" class="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-8 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/25 text-white font-bold text-base transition duration-200 hover:-translate-y-0.5 cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-whatsapp" viewBox="0 0 16 16">
+                        <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
+                    </svg>
                     Jadwalkan Demo Studio
-                </x-button>
+                </a>
             </div>
             <p class="text-xs text-indigo-300/80 font-medium">Tanpa komitmen &bull; Batalkan atau tingkatkan paket kapan saja</p>
         </div>
     </section>
-
-    <!-- Three.js Library & WebGL Architectural House Script -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const canvas = document.getElementById('three-house-canvas');
-            if (!canvas) return;
-
-            // Scene and Camera Setup
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
-            camera.position.set(5.5, 4.5, 5.5);
-
-            // WebGL Renderer
-            const renderer = new THREE.WebGLRenderer({
-                canvas: canvas,
-                alpha: true,
-                antialias: true
-            });
-            renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
-            // Handle Resize
-            const resizeObserver = new ResizeObserver(entries => {
-                for (let entry of entries) {
-                    const width = entry.contentRect.width;
-                    const height = entry.contentRect.height;
-                    camera.aspect = width / height;
-                    camera.updateProjectionMatrix();
-                    renderer.setSize(width, height);
-                }
-            });
-            resizeObserver.observe(canvas.parentElement);
-
-            // House Main Group
-            const houseGroup = new THREE.Group();
-            scene.add(houseGroup);
-
-            // Base Platform
-            const baseGeo = new THREE.BoxGeometry(4.2, 0.15, 4.2);
-            const baseMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.8 });
-            const baseMesh = new THREE.Mesh(baseGeo, baseMat);
-            baseMesh.position.y = -0.075;
-            baseMesh.receiveShadow = true;
-            houseGroup.add(baseMesh);
-
-            // Swimming Pool
-            const poolGeo = new THREE.PlaneGeometry(1.2, 2.2);
-            const poolMat = new THREE.MeshStandardMaterial({ color: 0x0ea5e9, roughness: 0.1, metalness: 0.8 });
-            const poolMesh = new THREE.Mesh(poolGeo, poolMat);
-            poolMesh.rotation.x = -Math.PI / 2;
-            poolMesh.position.set(1.2, 0.01, -0.4);
-            houseGroup.add(poolMesh);
-
-            // First Floor Building
-            const firstFloorGeo = new THREE.BoxGeometry(2.2, 1.2, 2.2);
-            const wallMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5 });
-            const firstFloor = new THREE.Mesh(firstFloorGeo, wallMat);
-            firstFloor.position.y = 0.6;
-            firstFloor.castShadow = true;
-            firstFloor.receiveShadow = true;
-            houseGroup.add(firstFloor);
-
-            // Front Window (Glass)
-            const winGeo = new THREE.PlaneGeometry(1.6, 0.8);
-            const glassMat = new THREE.MeshStandardMaterial({ color: 0x818cf8, roughness: 0.05, metalness: 0.95, transparent: true, opacity: 0.5 });
-            const windowMesh = new THREE.Mesh(winGeo, glassMat);
-            windowMesh.position.set(0, 0.6, 1.11);
-            houseGroup.add(windowMesh);
-
-            // Front Door
-            const doorGeo = new THREE.BoxGeometry(0.5, 0.9, 0.05);
-            const woodMat = new THREE.MeshStandardMaterial({ color: 0x78350f, roughness: 0.7 });
-            const doorMesh = new THREE.Mesh(doorGeo, woodMat);
-            doorMesh.position.set(0.85, 0.45, 1.1);
-            houseGroup.add(doorMesh);
-
-            // Slab Separator
-            const slabGeo = new THREE.BoxGeometry(2.5, 0.1, 2.5);
-            const darkConcrete = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.7 });
-            const slab = new THREE.Mesh(slabGeo, darkConcrete);
-            slab.position.y = 1.25;
-            slab.castShadow = true;
-            slab.receiveShadow = true;
-            houseGroup.add(slab);
-
-            // Second Floor Building
-            const secondFloorGeo = new THREE.BoxGeometry(1.6, 1.0, 1.8);
-            const secondFloor = new THREE.Mesh(secondFloorGeo, wallMat);
-            secondFloor.position.set(-0.25, 1.8, -0.1);
-            secondFloor.castShadow = true;
-            secondFloor.receiveShadow = true;
-            houseGroup.add(secondFloor);
-
-            // Top Window (Glass)
-            const topWinGeo = new THREE.PlaneGeometry(1.2, 0.7);
-            const topWindow = new THREE.Mesh(topWinGeo, glassMat);
-            topWindow.position.set(-0.25, 1.8, 0.81);
-            houseGroup.add(topWindow);
-
-            // Roof Canopy
-            const roofGeo = new THREE.BoxGeometry(1.9, 0.08, 2.1);
-            const roof = new THREE.Mesh(roofGeo, darkConcrete);
-            roof.position.set(-0.25, 2.34, -0.1);
-            roof.castShadow = true;
-            houseGroup.add(roof);
-
-            // Tiny Tree Decoration
-            const trunkGeo = new THREE.CylinderGeometry(0.06, 0.06, 0.8);
-            const trunkMat = new THREE.MeshStandardMaterial({ color: 0x451a03, roughness: 0.9 });
-            const trunk = new THREE.Mesh(trunkGeo, trunkMat);
-            trunk.position.set(-1.4, 0.4, 1.3);
-            trunk.castShadow = true;
-            houseGroup.add(trunk);
-
-            const leafGeo = new THREE.SphereGeometry(0.35, 8, 8);
-            const leafMat = new THREE.MeshStandardMaterial({ color: 0x10b981, roughness: 0.8 });
-            const leaf = new THREE.Mesh(leafGeo, leafMat);
-            leaf.position.set(-1.4, 0.8, 1.3);
-            leaf.castShadow = true;
-            houseGroup.add(leaf);
-
-            // Scene Lighting
-            const ambient = new THREE.AmbientLight(0xffffff, 0.75);
-            scene.add(ambient);
-
-            const sunLight = new THREE.DirectionalLight(0xffffff, 0.85);
-            sunLight.position.set(6, 10, 4);
-            sunLight.castShadow = true;
-            sunLight.shadow.mapSize.width = 1024;
-            sunLight.shadow.mapSize.height = 1024;
-            sunLight.shadow.bias = -0.001;
-            scene.add(sunLight);
-
-            // Orbit Target orientation
-            camera.lookAt(0, 0.8, 0);
-
-            // Mouse interaction logic
-            let mouseX = 0;
-            let mouseY = 0;
-            let targetRotationX = 0;
-            let targetRotationY = 0;
-
-            window.addEventListener('mousemove', (e) => {
-                const rect = canvas.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                
-                if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
-                    mouseX = (x / rect.width) * 2 - 1;
-                    mouseY = -(y / rect.height) * 2 + 1;
-                }
-            });
-
-            // Loop ticket
-            const tick = () => {
-                // Autospin base
-                targetRotationY += 0.003;
-
-                // Adjust targets with mouse
-                const rotY = targetRotationY + mouseX * 0.45;
-                const rotX = mouseY * 0.15;
-
-                // Smooth damp rotation
-                houseGroup.rotation.y += (rotY - houseGroup.rotation.y) * 0.05;
-                houseGroup.rotation.x += (rotX - houseGroup.rotation.x) * 0.05;
-
-                renderer.render(scene, camera);
-                window.requestAnimationFrame(tick);
-            };
-            tick();
-        });
-    </script>
 
 </x-marketing-layout>

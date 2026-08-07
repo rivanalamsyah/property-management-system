@@ -58,6 +58,10 @@ class CmsBlogEditor extends Component
 
     public function mount(?string $id = null): void
     {
+        if (!\Illuminate\Support\Facades\Auth::user()->hasRole('super_admin')) {
+            abort(403, 'Unauthorized. Super Admin access only.');
+        }
+
         if ($id) {
             $this->isEdit = true;
             $this->article = CmsBlogArticle::with(['categories', 'tags'])->findOrFail($id);

@@ -19,14 +19,14 @@ enum ResidentStatus: string
     public function label(): string
     {
         return match ($this) {
-            self::PENDING => 'Pending Review',
-            self::RESERVED => 'Reserved',
-            self::ACTIVE => 'Active Resident',
-            self::LATE_PAYMENT => 'Late Payment Warning',
-            self::MOVING_OUT => 'Moving Out Schedule',
-            self::FORMER => 'Former Tenant (Checked Out)',
-            self::BLACKLISTED => 'Blacklisted',
-            self::INACTIVE => 'Inactive Account',
+            self::PENDING => 'Menunggu Review',
+            self::RESERVED => 'Dipesan',
+            self::ACTIVE => 'Penghuni Aktif',
+            self::LATE_PAYMENT => 'Terlambat Bayar',
+            self::MOVING_OUT => 'Proses Pindah',
+            self::FORMER => 'Mantan Penghuni',
+            self::BLACKLISTED => 'Daftar Hitam',
+            self::INACTIVE => 'Tidak Aktif',
         };
     }
 }

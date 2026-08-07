@@ -12,7 +12,7 @@ class SavedReportPolicy
 
     public function viewAny(User $user): bool
     {
-        return tenant() !== null;
+        return tenant() !== null && ($user->hasRole('owner') || $user->hasRole('super_admin'));
     }
 
     public function view(User $user, SavedReport $report): bool
@@ -21,12 +21,12 @@ class SavedReportPolicy
             return false;
         }
 
-        return $report->tenant_id === tenant()->id;
+        return $report->tenant_id === tenant()->id && ($user->hasRole('owner') || $user->hasRole('super_admin'));
     }
 
     public function create(User $user): bool
     {
-        return tenant() !== null;
+        return tenant() !== null && ($user->hasRole('owner') || $user->hasRole('super_admin'));
     }
 
     public function update(User $user, SavedReport $report): bool
@@ -35,7 +35,7 @@ class SavedReportPolicy
             return false;
         }
 
-        return $report->user_id === $user->id || $user->hasRole('owner');
+        return ($report->user_id === $user->id || $user->hasRole('owner') || $user->hasRole('super_admin'));
     }
 
     public function delete(User $user, SavedReport $report): bool
@@ -44,6 +44,6 @@ class SavedReportPolicy
             return false;
         }
 
-        return $report->user_id === $user->id || $user->hasRole('owner');
+        return ($report->user_id === $user->id || $user->hasRole('owner') || $user->hasRole('super_admin'));
     }
 }

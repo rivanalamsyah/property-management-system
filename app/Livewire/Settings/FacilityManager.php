@@ -11,6 +11,13 @@ class FacilityManager extends Component
 {
     use WithPagination;
 
+    public function mount(): void
+    {
+        if (!\Illuminate\Support\Facades\Auth::user()->hasPermission('manage-settings')) {
+            abort(403, 'Unauthorized.');
+        }
+    }
+
     // Filters & Search
     public string $search = '';
     public string $filterCategory = '';
@@ -73,6 +80,10 @@ class FacilityManager extends Component
 
     public function saveFacility(FacilityService $service): void
     {
+        if (!\Illuminate\Support\Facades\Auth::user()->hasPermission('manage-settings')) {
+            abort(403, 'Unauthorized.');
+        }
+
         $this->validate();
 
         $data = [
@@ -87,14 +98,14 @@ class FacilityManager extends Component
             $facility = Facility::forCurrentTenant()->findOrFail($this->facilityId);
             // Verify ownership: tenant can only edit their own custom facilities
             if ($facility->tenant_id !== tenant()->id) {
-                $this->dispatch('toast', ['type' => 'error', 'message' => 'Cannot edit system default facilities.']);
+                $this->dispatch('toast', ['type' => 'error', 'message' => 'Tidak dapat mengubah fasilitas bawaan sistem.']);
                 return;
             }
             $service->updateFacility($facility, $data);
-            $message = 'Facility updated successfully!';
+            $message = 'Fasilitas berhasil diperbarui!';
         } else {
             $service->createFacility($data);
-            $message = 'New facility created successfully!';
+            $message = 'Fasilitas baru berhasil dibuat!';
         }
 
         $this->showFormModal = false;
@@ -103,10 +114,14 @@ class FacilityManager extends Component
 
     public function confirmDelete(int $id): void
     {
+        if (!\Illuminate\Support\Facades\Auth::user()->hasPermission('manage-settings')) {
+            abort(403, 'Unauthorized.');
+        }
+
         $facility = Facility::forCurrentTenant()->findOrFail($id);
         
         if ($facility->tenant_id !== tenant()->id) {
-            $this->dispatch('toast', ['type' => 'error', 'message' => 'System default facilities cannot be deleted.']);
+            $this->dispatch('toast', ['type' => 'error', 'message' => 'Fasilitas bawaan sistem tidak dapat dihapus.']);
             return;
         }
 
@@ -116,22 +131,30 @@ class FacilityManager extends Component
 
     public function deleteFacility(FacilityService $service): void
     {
+        if (!\Illuminate\Support\Facades\Auth::user()->hasPermission('manage-settings')) {
+            abort(403, 'Unauthorized.');
+        }
+
         if ($this->deletingId) {
             $facility = Facility::forCurrentTenant()->findOrFail($this->deletingId);
             $service->deleteFacility($facility);
             
             $this->showDeleteModal = false;
             $this->deletingId = null;
-            $this->dispatch('toast', ['type' => 'success', 'message' => 'Facility deleted successfully.']);
+            $this->dispatch('toast', ['type' => 'success', 'message' => 'Fasilitas berhasil dihapus.']);
         }
     }
 
     public function toggleStatus(int $id, FacilityService $service): void
     {
+        if (!\Illuminate\Support\Facades\Auth::user()->hasPermission('manage-settings')) {
+            abort(403, 'Unauthorized.');
+        }
+
         $facility = Facility::forCurrentTenant()->findOrFail($id);
         
         if ($facility->tenant_id !== tenant()->id) {
-            $this->dispatch('toast', ['type' => 'error', 'message' => 'Cannot toggle status of system default facilities.']);
+            $this->dispatch('toast', ['type' => 'error', 'message' => 'Tidak dapat mengubah status fasilitas bawaan sistem.']);
             return;
         }
 
@@ -140,12 +163,16 @@ class FacilityManager extends Component
 
         $this->dispatch('toast', [
             'type' => 'success',
-            'message' => 'Facility status toggled successfully!',
+            'message' => 'Status fasilitas berhasil diubah!',
         ]);
     }
 
     public function moveUp(int $id, FacilityService $service): void
     {
+        if (!\Illuminate\Support\Facades\Auth::user()->hasPermission('manage-settings')) {
+            abort(403, 'Unauthorized.');
+        }
+
         $facility = Facility::forCurrentTenant()->findOrFail($id);
         $previous = Facility::forCurrentTenant()
             ->where('display_order', '<', $facility->display_order)
@@ -156,12 +183,16 @@ class FacilityManager extends Component
             $oldOrder = $facility->display_order;
             $facility->update(['display_order' => $previous->display_order]);
             $previous->update(['display_order' => $oldOrder]);
-            $this->dispatch('toast', ['type' => 'success', 'message' => 'Reordered successfully.']);
+            $this->dispatch('toast', ['type' => 'success', 'message' => 'Urutan berhasil diperbarui.']);
         }
     }
 
     public function moveDown(int $id, FacilityService $service): void
     {
+        if (!\Illuminate\Support\Facades\Auth::user()->hasPermission('manage-settings')) {
+            abort(403, 'Unauthorized.');
+        }
+
         $facility = Facility::forCurrentTenant()->findOrFail($id);
         $next = Facility::forCurrentTenant()
             ->where('display_order', '>', $facility->display_order)
@@ -172,7 +203,7 @@ class FacilityManager extends Component
             $oldOrder = $facility->display_order;
             $facility->update(['display_order' => $next->display_order]);
             $next->update(['display_order' => $oldOrder]);
-            $this->dispatch('toast', ['type' => 'success', 'message' => 'Reordered successfully.']);
+            $this->dispatch('toast', ['type' => 'success', 'message' => 'Urutan berhasil diperbarui.']);
         }
     }
 

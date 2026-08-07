@@ -40,98 +40,128 @@
             </p>
             
             <!-- Search Input Box -->
-            <div class="max-w-md mx-auto pt-4 relative group">
+            <form action="{{ request()->url() }}" method="GET" class="max-w-md mx-auto pt-4 relative group">
+                @if($activeCategory)
+                    <input type="hidden" name="category" value="{{ $activeCategory }}">
+                @endif
                 <div class="absolute -inset-1 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-2xl blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
                 <div class="relative flex gap-2 bg-white p-1.5 rounded-xl border border-slate-200 shadow-sm">
-                    <input type="text" placeholder="Cari panduan sewa, tips hunian, dll..." aria-label="Cari artikel atau panduan"
+                    <input type="text" name="search" value="{{ $searchQuery }}" placeholder="Cari panduan sewa, tips hunian, dll..." aria-label="Cari artikel atau panduan"
                            class="flex-1 px-4 py-2.5 bg-transparent border-0 text-xs text-slate-900 placeholder-slate-400 focus:ring-0 focus:outline-hidden" />
-                    <x-button variant="primary" size="sm" class="px-5 cursor-pointer">Cari</x-button>
+                    <button type="submit" class="px-5 py-2.5 bg-indigo-650 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition cursor-pointer shadow-xs">Cari</button>
                 </div>
-            </div>
+            </form>
         </div>
     </section>
 
     <!-- Section 2: Category Filter Grid -->
     <section class="py-6 bg-white border-b border-slate-150">
         <div class="max-w-7xl mx-auto px-6 flex flex-wrap justify-center gap-2">
-            <button class="px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 text-white cursor-pointer shadow-xs">Semua Artikel</button>
-            <button class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-50 text-slate-655 hover:bg-slate-100 border border-slate-200/60 transition cursor-pointer">Operasional Properti</button>
-            <button class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-50 text-slate-655 hover:bg-slate-100 border border-slate-200/60 transition cursor-pointer">Keuangan &amp; Penagihan</button>
-            <button class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-50 text-slate-655 hover:bg-slate-100 border border-slate-200/60 transition cursor-pointer">Hubungan Penghuni</button>
-            <button class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-50 text-slate-655 hover:bg-slate-100 border border-slate-200/60 transition cursor-pointer">Studi Kasus</button>
+            <a href="{{ request()->fullUrlWithQuery(['category' => null, 'page' => null]) }}" 
+               class="px-4 py-2 rounded-xl text-xs font-bold {{ !$activeCategory ? 'bg-indigo-600 text-white shadow-xs' : 'bg-slate-50 text-slate-650 hover:bg-slate-100 border border-slate-200/60' }} transition cursor-pointer">
+               Semua Artikel
+            </a>
+            @foreach($categories as $cat)
+                @if($cat->articles_count > 0)
+                    <a href="{{ request()->fullUrlWithQuery(['category' => $cat->slug, 'page' => null]) }}" 
+                       class="px-4 py-2 rounded-xl text-xs font-bold {{ $activeCategory === $cat->slug ? 'bg-indigo-600 text-white shadow-xs' : 'bg-slate-50 text-slate-650 hover:bg-slate-100 border border-slate-200/60' }} transition cursor-pointer">
+                       {{ $cat->name }}
+                    </a>
+                @endif
+            @endforeach
         </div>
     </section>
 
     <!-- Section 3: Featured Article Showcase -->
+    @if($featuredArticle)
     <section class="py-12 bg-slate-50/50">
         <div class="max-w-5xl mx-auto px-6">
-            <div class="p-6 bg-white border border-slate-200/80 rounded-3xl grid grid-cols-1 md:grid-cols-2 gap-8 items-center shadow-sm hover:shadow-md transition-shadow group">
+            <a href="{{ route('blog.detail', ['slug' => $featuredArticle->slug]) }}" class="block p-6 bg-white border border-slate-200/80 rounded-3xl grid grid-cols-1 md:grid-cols-2 gap-8 items-center shadow-sm hover:shadow-md transition-shadow group">
                 <!-- Cover frame -->
-                <div class="aspect-[4/3] overflow-hidden rounded-2xl shadow-inner border border-slate-100 bg-slate-550 relative">
-                    <img src="{{ asset('assets/images/blog/featured_2026.png') }}" class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-500" alt="Panduan Utama 2026">
+                <div class="aspect-[4/3] overflow-hidden rounded-2xl shadow-inner border border-slate-100 bg-slate-50 relative">
+                    @if($featuredArticle->featured_image)
+                        <img src="{{ $featuredArticle->featured_image }}" class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-500" alt="{{ $featuredArticle->title }}">
+                    @else
+                        <div class="w-full h-full bg-gradient-to-tr from-indigo-500/5 to-purple-500/5 flex items-center justify-center">
+                            <svg class="w-12 h-12 text-indigo-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        </div>
+                    @endif
                 </div>
                 <div class="space-y-4 text-left">
-                    <span class="text-[9px] font-extrabold text-indigo-600 uppercase tracking-widest bg-indigo-50 px-2 py-0.5 rounded-md">Operasional Properti</span>
-                    <h3 class="text-2xl font-black text-slate-900 tracking-tight leading-tight">Cara Memaksimalkan Okupansi &amp; Pendapatan Kos-Kosan di Tahun 2026</h3>
+                    <span class="text-[9px] font-extrabold text-indigo-600 uppercase tracking-widest bg-indigo-50 px-2 py-0.5 rounded-md">
+                        {{ $featuredArticle->categories->first()?->name ?? 'Insight' }}
+                    </span>
+                    <h3 class="text-2xl font-black text-slate-900 tracking-tight leading-tight group-hover:text-indigo-600 transition-colors">
+                        {{ $featuredArticle->title }}
+                    </h3>
                     <p class="text-xs text-slate-500 leading-relaxed font-medium">
-                        Panduan komprehensif tentang cara menata alokasi kamar, menyusun fasilitas unggulan, dan menarik calon penghuni baru untuk menekan durasi kamar kosong.
+                        {{ $featuredArticle->excerpt }}
                     </p>
                     <div class="flex items-center gap-3 pt-2 text-xs font-bold text-slate-700">
-                        <span>Rivan Alamsyah</span>
-                        <span class="text-[10px] text-slate-400 font-medium font-mono">&bull; 8 menit baca</span>
+                        <span>{{ $featuredArticle->author_name ?? 'Tim Kosan' }}</span>
+                        <span class="text-[10px] text-slate-400 font-medium font-mono">&bull; {{ $featuredArticle->published_at ? $featuredArticle->published_at->translatedFormat('d M Y') : $featuredArticle->created_at->format('d M Y') }}</span>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
     </section>
+    @endif
 
     <!-- Section 4: Articles Grid -->
     <section class="py-16 bg-white">
-        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
-            <!-- Card 1 -->
-            <div class="bg-white border border-slate-200/80 rounded-3xl overflow-hidden shadow-xs hover:shadow-md hover:-translate-y-1 transition duration-200 flex flex-col h-full group">
-                <div class="h-40 bg-slate-100 overflow-hidden flex-shrink-0 relative">
-                    <img src="{{ asset('assets/images/blog/bank_reconciliation.png') }}" class="w-full h-full object-cover group-hover:scale-101.5 transition duration-300" alt="Bank Reconciliation">
-                </div>
-                <div class="p-5 flex flex-col justify-between flex-1 text-left">
-                    <div class="space-y-3">
-                        <span class="text-[9px] font-extrabold text-indigo-600 uppercase tracking-wider bg-indigo-50 px-2 py-0.5 rounded-md">Keuangan &amp; Penagihan</span>
-                        <h4 class="text-base font-bold text-slate-900 tracking-tight">Panduan Rekonsiliasi Otomatis Transfer Bank BCA/Mandiri</h4>
-                        <p class="text-xs text-slate-500 leading-relaxed font-medium">Cara mencocokkan mutasi rekening bank dengan daftar tagihan bulanan tanpa kesalahan verifikasi manual.</p>
+        <div class="max-w-7xl mx-auto px-6">
+            @if($articles->isEmpty())
+                <!-- Empty State -->
+                <div class="max-w-md mx-auto text-center py-12 space-y-4">
+                    <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto text-slate-400 border border-slate-100">
+                        <svg class="w-6 h-6 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
                     </div>
-                    <p class="text-[9.5px] text-slate-400 font-bold font-mono pt-4">12 Jul 2026 &bull; 5 menit baca</p>
+                    <h3 class="text-lg font-black text-slate-900 tracking-tight">Artikel Tidak Ditemukan</h3>
+                    <p class="text-xs text-slate-450 leading-relaxed font-medium">Maaf, kami tidak menemukan artikel yang cocok dengan pencarian atau kategori ini. Coba ubah kata kunci Anda.</p>
+                    <a href="{{ route('blog.index') }}" class="inline-flex items-center justify-center px-4 py-2 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 rounded-xl text-xs font-bold transition">
+                        Reset Semua Filter
+                    </a>
                 </div>
-            </div>
+            @else
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    @foreach($articles as $art)
+                        {{-- Skip featured article on page 1 --}}
+                        @php if ($featuredArticle && $art->id === $featuredArticle->id && !$searchQuery && !$activeCategory && $articles->currentPage() === 1) continue; @endphp
+                        <a href="{{ route('blog.detail', ['slug' => $art->slug]) }}" class="bg-white border border-slate-200/80 rounded-3xl overflow-hidden shadow-xs hover:shadow-md hover:-translate-y-1 transition duration-200 flex flex-col h-full group">
+                            <div class="h-40 bg-slate-100 overflow-hidden flex-shrink-0 relative">
+                                @if($art->featured_image)
+                                    <img src="{{ $art->featured_image }}" class="w-full h-full object-cover group-hover:scale-101.5 transition duration-300" alt="{{ $art->title }}">
+                                @else
+                                    <div class="w-full h-full bg-gradient-to-tr from-indigo-500/5 to-purple-500/5 flex items-center justify-center">
+                                        <svg class="w-8 h-8 text-indigo-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="p-5 flex flex-col justify-between flex-1 text-left">
+                                <div class="space-y-3">
+                                    <span class="text-[9px] font-extrabold text-indigo-600 uppercase tracking-wider bg-indigo-50 px-2 py-0.5 rounded-md">
+                                        {{ $art->categories->first()?->name ?? 'Insight' }}
+                                    </span>
+                                    <h4 class="text-base font-bold text-slate-900 tracking-tight group-hover:text-indigo-600 transition-colors leading-snug">{{ $art->title }}</h4>
+                                    <p class="text-xs text-slate-500 leading-relaxed font-medium line-clamp-3">{{ $art->excerpt }}</p>
+                                </div>
+                                <p class="text-[9.5px] text-slate-400 font-bold font-mono pt-4">
+                                    {{ $art->published_at ? $art->published_at->translatedFormat('d M Y') : $art->created_at->format('d M Y') }} &bull; {{ $art->author_name ?? 'Tim Kosan' }}
+                                </p>
+                            </div>
+                        </a>
+                    @endforeach
+                </div>
 
-            <!-- Card 2 -->
-            <div class="bg-white border border-slate-200/80 rounded-3xl overflow-hidden shadow-xs hover:shadow-md hover:-translate-y-1 transition duration-200 flex flex-col h-full group">
-                <div class="h-40 bg-slate-100 overflow-hidden flex-shrink-0 relative">
-                    <img src="{{ asset('assets/images/blog/rules_guide.png') }}" class="w-full h-full object-cover group-hover:scale-101.5 transition duration-300" alt="Rules Guide">
-                </div>
-                <div class="p-5 flex flex-col justify-between flex-1 text-left">
-                    <div class="space-y-3">
-                        <span class="text-[9px] font-extrabold text-indigo-600 uppercase tracking-wider bg-indigo-50 px-2 py-0.5 rounded-md">Hubungan Penghuni</span>
-                        <h4 class="text-base font-bold text-slate-900 tracking-tight">Menyusun Aturan &amp; Tata Tertib Kos yang Efektif</h4>
-                        <p class="text-xs text-slate-500 leading-relaxed font-medium">Cara merumuskan tata tertib kos mengenai jam berkunjung, batas jam malam, dan ketenangan untuk mencegah konflik.</p>
+                <!-- Custom styled Pagination Links -->
+                @if($articles->hasPages())
+                    <div class="mt-16 flex justify-center">
+                        {{ $articles->links() }}
                     </div>
-                    <p class="text-[9.5px] text-slate-400 font-bold font-mono pt-4">08 Jul 2026 &bull; 4 menit baca</p>
-                </div>
-            </div>
-
-            <!-- Card 3 -->
-            <div class="bg-white border border-slate-200/80 rounded-3xl overflow-hidden shadow-xs hover:shadow-md hover:-translate-y-1 transition duration-200 flex flex-col h-full group">
-                <div class="h-40 bg-slate-100 overflow-hidden flex-shrink-0 relative">
-                    <img src="{{ asset('assets/images/blog/checkout_guide.png') }}" class="w-full h-full object-cover group-hover:scale-101.5 transition duration-300" alt="Checkout Guide">
-                </div>
-                <div class="p-5 flex flex-col justify-between flex-1 text-left">
-                    <div class="space-y-3">
-                        <span class="text-[9px] font-extrabold text-indigo-600 uppercase tracking-wider bg-indigo-50 px-2 py-0.5 rounded-md">Operasional Properti</span>
-                        <h4 class="text-base font-bold text-slate-900 tracking-tight">Panduan Kelola Check-In &amp; Check-Out Penghuni</h4>
-                        <p class="text-xs text-slate-500 leading-relaxed font-medium">Langkah sistematis mencatat posisi meteran listrik awal, menghitung sisa deposit jaminan, dan menginspeksi kamar.</p>
-                    </div>
-                    <p class="text-[9.5px] text-slate-400 font-bold font-mono pt-4">02 Jul 2026 &bull; 6 menit baca</p>
-                </div>
-            </div>
+                @endif
+            @endif
         </div>
     </section>
 
@@ -161,7 +191,7 @@
             <h3 class="text-2xl font-black text-slate-900 tracking-tight">Strategi Mengembangkan Bisnis Kos Komersial di Era Digital</h3>
             <p class="text-xs text-slate-500 max-w-lg mx-auto font-medium">Ikuti sesi konsultasi langsung bersama pakar manajemen properti seputar strategi pelunasan sewa tepat waktu.</p>
             
-            <form class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+            <form class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto" onsubmit="event.preventDefault(); alert('Terima kasih! Pendaftaran webinar Anda telah berhasil.');">
                 <input type="email" placeholder="Masukkan alamat email Anda..." required aria-label="Alamat Email Webinar"
                        class="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-200/80 rounded-xl text-xs text-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" />
                 <x-button variant="primary" size="sm" type="submit" class="cursor-pointer">Daftar Webinar Gratis</x-button>
